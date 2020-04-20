@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<UnityGameFramework>
+  <AssetBundleCollection>
+    <AssetBundles>
+      <AssetBundle Name="Configs" LoadType="0" Packed="True" />
+      <AssetBundle Name="DataTables" LoadType="0" Packed="True" />
+      <AssetBundle Name="Fonts" LoadType="0" Packed="True" />
+      <AssetBundle Name="Localization/Dictionaries" Variant="en-us" LoadType="0" Packed="True" />
+      <AssetBundle Name="Localization/Dictionaries" Variant="ko-kr" LoadType="0" Packed="True" />
+      <AssetBundle Name="Localization/Dictionaries" Variant="zh-cn" LoadType="0" Packed="True" />
+      <AssetBundle Name="Localization/Dictionaries" Variant="zh-tw" LoadType="0" Packed="True" />
+      <AssetBundle Name="Scenes" LoadType="0" Packed="True" />
+      <AssetBundle Name="UI/UIForms" LoadType="0" Packed="True" />
+    </AssetBundles>
+    <Assets>
+      <Asset Guid="09966b19e546cc94aa84d0743cb2a83d" AssetBundleName="UI/UIForms" />
+      <Asset Guid="1053b0070685be347ab58587156842dc" AssetBundleName="Localization/Dictionaries" AssetBundleVariant="zh-tw" />
+      <Asset Guid="14869ac0d4433f04db1704e39d03412e" AssetBundleName="Localization/Dictionaries" AssetBundleVariant="en-us" />
+      <Asset Guid="315e8ed2db27c254cb3366ff0793cd90" AssetBundleName="DataTables" />
+      <Asset Guid="352da872791696c48af3b21132e3e3c3" AssetBundleName="DataTables" />
+      <Asset Guid="372a8b1e52bedc64b9207b12d167afaa" AssetBundleName="DataTables" />
+      <Asset Guid="4473d81b14ddb0143addf0e6050d8491" AssetBundleName="Scenes" />
+      <Asset Guid="44c8db52241385c45bbb14a1718f17bf" AssetBundleName="Configs" />
+      <Asset Guid="5dcd89912e222bf4c87f76db4044bc5e" AssetBundleName="Localization/Dictionaries" AssetBundleVariant="ko-kr" />
+      <Asset Guid="77cbb7c5404c10242ab59953e0746314" AssetBundleName="Fonts" />
+      <Asset Guid="7fd11dc5d29076d469d414dec2818f11" AssetBundleName="Configs" />
+      <Asset Guid="8e114ded6a865324588170636872943c" AssetBundleName="DataTables" />
+      <Asset Guid="97d117308cf86924289e81e7e71dd5dd" AssetBundleName="DataTables" />
+      <Asset Guid="9b433f0bb7fef6f4085c316a0d88c307" AssetBundleName="DataTables" />
+      <Asset Guid="9be2e1e45f4edd74c8764538ad306b78" AssetBundleName="Localization/Dictionaries" AssetBundleVariant="zh-cn" />
+      <Asset Guid="9c3faac13c8ced84a9f3018303b7bb98" AssetBundleName="DataTables" />
+      <Asset Guid="a33e23ae848110243820cda82120b105" AssetBundleName="DataTables" />
+      <Asset Guid="a71f8bb1b1b2c51438e2bafc884cb02c" AssetBundleName="DataTables" />
+      <Asset Guid="b031b4f2980561542a7f7ba41391edc3" AssetBundleName="Scenes" />
+      <Asset Guid="cfe53cf384344bd47a8680f8c5f97a7b" AssetBundleName="DataTables" />
+      <Asset Guid="f2f97a713beae744181ba934f9c4113a" AssetBundleName="DataTables" />
+      <Asset Guid="fdb5edd099d06b045af609ba3172400a" AssetBundleName="DataTables" />
+    </Assets>
+  </AssetBundleCollection>
+</UnityGameFramework>
