@@ -130,17 +130,7 @@ namespace StarForce
         protected override void OnOpen(object userData)
         {
             base.OnOpen(userData);
-            GameEntry.Skill.Skill1Consume = 1;
-            GameEntry.Skill.Skill2Consume = 3;
-            GameEntry.Skill.Skill3Consume = 5;
-            GameEntry.Skill.Skill4Consume = 7;
-            GameEntry.Skill.Skill5Consume = 9;
 
-            GameEntry.Skill.Skill1CdMax = 2;
-            GameEntry.Skill.Skill2CdMax = 2;
-            GameEntry.Skill.Skill3CdMax = 2;
-            GameEntry.Skill.Skill4CdMax = 2;
-            GameEntry.Skill.Skill5CdMax = 2;
             GameEntry.Event.Subscribe(NextRoundEventArgs.EventId, OnNextRound);
             GameEntry.Event.Subscribe(RoleDieEventArgs.EventId, OnRoleDie);
             GameEntry.Event.Subscribe(GameOverEventArgs.EventId, OnGameOver);

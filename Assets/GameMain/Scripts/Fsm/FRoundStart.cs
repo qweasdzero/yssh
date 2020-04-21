@@ -1,193 +1,103 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using GameFramework;
 using GameFramework.Event;
+using GameFramework.Fsm;
 using SG1;
+using UnityEngine;
 using UnityGameFramework.Runtime;
 
 namespace StarForce
 {
-    public class NormalGame : GameBase
+    public class FRoundStart : FsmBase
     {
-//        private float m_ElapseSeconds = 0f;
+        public List<int> m_PowerList = new List<int>() {2, 4, 6, 8, 10};
 
-        public override GameMode GameMode
+        protected override void OnEnter(IFsm<NormalGame> fsm)
         {
-            get
+            base.OnEnter(fsm);
+            //计算下一个目标
+
+            while (fsm.Owner.First==null)
             {
-                return GameMode.Normal;
-            }
-        }
-
-        private int m_Seat;
-        private int m_Round;
-        private bool m_Start;
-        private bool m_Wait;
-
-        public int Seat
-        {
-            get { return m_Seat; }
-            set { m_Seat = value; }
-        }
-
-        public int Round
-        {
-            get { return m_Round; }
-            set { m_Round = value; }
-        }
-
-        //攻击角色
-        private Role m_First;
-        private Role m_Second;
-
-        public Role First
-        {
-            get { return m_First; }
-            set { m_First = value; }
-        }
-
-        public Role Second
-        {
-            get { return m_Second; }
-            set { m_Second = value; }
-        }
-
-        public override void Initialize()
-        {
-            base.Initialize();
-            m_SkillList = new List<Role>();
-            m_UseSkill = new Stack<Role>();
-            
-            GameEntry.Event.Subscribe(AtkEndEventArgs.EventId, OnAtkEnd);
-            GameEntry.Event.Subscribe(ActiveSkillEventArgs.EventId, OnActiveSkill);
-            GameEntry.Event.Subscribe(StartBattleEventArgs.EventId, OnStartBattle);
-        }
-
-        private void Start()
-        {
-            m_Seat = 1;
-            m_Round = 1;
-            m_Start = true;
-
-            
-            GameEntry.Event.Fire(this, ReferencePool.Acquire<NextRoundEventArgs>().Fill());
-        }
-
-        public override void Shutdown()
-        {
-            base.Shutdown();
-            GameEntry.Event.Unsubscribe(AtkEndEventArgs.EventId, OnAtkEnd);
-            GameEntry.Event.Unsubscribe(ActiveSkillEventArgs.EventId, OnActiveSkill);
-            GameEntry.Event.Unsubscribe(StartBattleEventArgs.EventId, OnStartBattle);
-        }
-
-        private void OnActiveSkill(object sender, GameEventArgs e)
-        {
-            ActiveSkillEventArgs ne = e as ActiveSkillEventArgs;
-            if (ne == null)
-            {
-                return;
-            }
-
-            if (ne.CampType == CampType.Player)
-            {
-                m_SkillList.Add(GameEntry.Role.MyRole[ne.Seat]);
-            }
-
-            if (ne.CampType == CampType.Enemy)
-            {
-                m_SkillList.Add(GameEntry.Role.EnemyRole[ne.Seat]);
-            }
-        }
-
-        private void OnAtkEnd(object sender, GameEventArgs e)
-        {
-            AtkEndEventArgs ne = e as AtkEndEventArgs;
-            if (ne == null)
-            {
-                return;
-            }
-
-            m_Wait = false;
-        }
-
-        public override void Update(float elapseSeconds, float realElapseSeconds)
-        {
-            base.Update(elapseSeconds, realElapseSeconds);
-            if (m_Start)
-            {
-                if (!m_Wait)
+                if (fsm.Owner.Seat / 5 >= 1)
                 {
-                    if (m_SkillList.Count > 0)
+                    fsm.Owner.Round += 1;
+                    if (fsm.Owner.Round >= 5)
                     {
-                        SkillQueue();
+                        GameEntry.Skill.Power += 10;
+                    }
+                    else
+                    {
+                        GameEntry.Skill.Power = m_PowerList[fsm.Owner.Round - 1];
                     }
 
-                    if (m_UseSkill.Count > 0)
-                    {
-                        Log.Info(m_UseSkill.Count);
-                        Role role = m_UseSkill.Pop();
-                        m_Wait = true;
-                        GameEntry.Event.Fire(this,
-                            ReferencePool.Acquire<SkillEventArgs>().Fill(role.GetImpact().Seat, role.GetImpact().Camp));
-                        return;
-                    }
-
-                    Atk();
+                    GameEntry.Event.Fire(this, ReferencePool.Acquire<NextRoundEventArgs>().Fill());
                 }
+
+                fsm.Owner.Seat = (fsm.Owner.Seat % 5) + 1;
+                
+                if (m_SkillList.Count > 0)
+                {
+                    SkillQueue();
+                }
+
+                if (m_UseSkill.Count > 0)
+                {
+                    Role role = m_UseSkill.Pop();
+                    GameEntry.Event.Fire(this,
+                        ReferencePool.Acquire<SkillEventArgs>().Fill(role.GetImpact().Seat, role.GetImpact().Camp));
+                    return;
+                }
+
+                Atk(fsm);
             }
         }
 
-        /// <summary>
-        /// 寻找攻击者
-        /// </summary>
-        private void Atk()
+        private void Atk(IFsm<NormalGame> fsm)
         {
-            if (m_First == null)
+            if (fsm.Owner.First == null)
             {
-                Next();
-                Role role1 = GameEntry.Role.MyRole[m_Seat];
-                Role role2 = GameEntry.Role.EnemyRole[m_Seat];
+                Role role1 = GameEntry.Role.MyRole[fsm.Owner.Seat];
+                Role role2 = GameEntry.Role.EnemyRole[fsm.Owner.Seat];
                 if (role1.GetImpact().Speed >= role2.GetImpact().Speed)
                 {
-                    m_First = role1;
-                    m_Second = role2;
+                    fsm.Owner.First = role1;
+                    fsm.Owner.Second = role2;
                 }
                 else
                 {
-                    m_First = role2;
-                    m_Second = role1;
+                    fsm.Owner.First = role2;
+                    fsm.Owner.Second = role1;
                 }
 
-                if (!m_First.GetImpact().Die)
+                if (!fsm.Owner.First.GetImpact().Die)
                 {
-                    int target = GetAtkTarget(m_First.GetImpact());
+                    int target = GetAtkTarget(fsm.Owner.First.GetImpact());
                     if (target == 0)
                     {
-                        IsGameOver(m_First.GetImpact().Camp);
+                        IsGameOver(fsm.Owner.First.GetImpact().Camp);
                         return;
                     }
                     else
                     {
                         GameEntry.Event.Fire(this,
                             ReferencePool.Acquire<AtkEventArgs>()
-                                .Fill(m_Seat, m_First.GetImpact().Camp, target));
-                        m_Wait = true;
+                                .Fill(fsm.Owner.Seat, fsm.Owner.First.GetImpact().Camp, target));
                     }
                 }
             }
             else
             {
-                if (!m_Second.GetImpact().Die)
+                if (!fsm.Owner.Second.GetImpact().Die)
                 {
-                    int target = GetAtkTarget(m_Second.GetImpact());
+                    int target = GetAtkTarget(fsm.Owner.Second.GetImpact());
                     if (target == 0)
                     {
-                        if (!IsGameOver(m_Second.GetImpact().Camp))
+                        if (!IsGameOver(fsm.Owner.Second.GetImpact().Camp))
                         {
-                            m_First = null;
-                            m_Second = null;
+                            fsm.Owner.First = null;
+                            fsm.Owner.Second = null;
                         }
 
                         return;
@@ -196,25 +106,16 @@ namespace StarForce
                     {
                         GameEntry.Event.Fire(this,
                             ReferencePool.Acquire<AtkEventArgs>()
-                                .Fill(m_Seat, m_Second.GetImpact().Camp, target));
-                        m_Wait = true;
+                                .Fill(fsm.Owner.Seat, fsm.Owner.Second.GetImpact().Camp, target));
                     }
                 }
 
-                if (!IsGameOver(m_Second.GetImpact().Camp))
+                if (!IsGameOver(fsm.Owner.Second.GetImpact().Camp))
                 {
-                    m_First = null;
-                    m_Second = null;
+                    fsm.Owner.First = null;
+                    fsm.Owner.Second = null;
                 }
             }
-        }
-
-        /// <summary>
-        /// 下一个位置
-        /// </summary>
-        private void Next()
-        {
-          
         }
 
         /// <summary>
@@ -246,7 +147,7 @@ namespace StarForce
                     break;
             }
 
-            m_Start = false;
+            // m_Start = false;
             GameEntry.Event.Fire(this, ReferencePool.Acquire<GameOverEventArgs>().Fill());
             return true;
         }
@@ -359,15 +260,15 @@ namespace StarForce
             return target;
         }
 
-        private void OnStartBattle(object sender, GameEventArgs e)
-        {
-            StartBattleEventArgs ne = e as StartBattleEventArgs;
-            if (ne == null)
-            {
-                return;
-            }
 
-            Start();
+        protected override void OnUpdate(IFsm<NormalGame> fsm, float elapseSeconds, float realElapseSeconds)
+        {
+            base.OnUpdate(fsm, elapseSeconds, realElapseSeconds);
+        }
+
+        protected override void OnLeave(IFsm<NormalGame> fsm, bool isShutdown)
+        {
+            base.OnLeave(fsm, isShutdown);
         }
     }
 }
