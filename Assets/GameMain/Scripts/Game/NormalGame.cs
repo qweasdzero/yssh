@@ -50,6 +50,7 @@ namespace StarForce
                     Hp = 200,
                     HpMax = 200,
                     Speed = 100 + i,
+                    SkillType=i,
                 });
             }
 
@@ -62,9 +63,9 @@ namespace StarForce
                     Hp = 200,
                     HpMax = 200,
                     Speed = 100 + 2 * i,
+                    SkillType=i,
                 });
             }
-
 
             GameEntry.Event.Subscribe(AtkEndEventArgs.EventId, OnAtkEnd);
             GameEntry.Event.Subscribe(ActiveSkillEventArgs.EventId, OnActiveSkill);
@@ -133,7 +134,6 @@ namespace StarForce
 
                     if (m_UseSkill.Count > 0)
                     {
-                        Log.Info(m_UseSkill.Count);
                         Role role = m_UseSkill.Pop();
                         m_Wait = true;
                         GameEntry.Event.Fire(this,
@@ -389,11 +389,6 @@ namespace StarForce
             }
 
             Start();
-        }
-
-        protected override void OnShowEntityFailure(object sender, GameEventArgs e)
-        {
-            base.OnShowEntityFailure(sender, e);
         }
     }
 }

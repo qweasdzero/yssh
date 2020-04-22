@@ -41,7 +41,7 @@ namespace StarForce
                 return;
             }
 
-            m_ImpactData=new RoleImpactData(m_RoleData);
+            m_ImpactData = new RoleImpactData(m_RoleData);
             if (m_RoleData.Camp == CampType.Player)
             {
                 m_RoleData.Position = RoleUtility.MyRolePos[m_RoleData.Seat];
@@ -94,14 +94,13 @@ namespace StarForce
             {
                 return;
             }
-            
+
             if (ne.CampType == m_RoleData.Camp && ne.Seat == m_RoleData.Seat)
             {
                 m_Anim.SetTrigger(Skill);
             }
         }
-
-
+        
         private void OnAtkEnd(object sender, GameEventArgs e)
         {
             AtkEndEventArgs ne = e as AtkEndEventArgs;
@@ -118,11 +117,11 @@ namespace StarForce
                 {
                     m_Sprite.enabled = false;
                     m_RoleData.Die = true;
-                    GameEntry.Event.Fire(this,ReferencePool.Acquire<RoleDieEventArgs>().Fill(m_RoleData.Seat,m_RoleData.Camp));
+                    GameEntry.Event.Fire(this,
+                        ReferencePool.Acquire<RoleDieEventArgs>().Fill(m_RoleData.Seat, m_RoleData.Camp));
                 }
             }
         }
-
 
         private void OnAtk(object sender, GameEventArgs e)
         {
@@ -145,9 +144,34 @@ namespace StarForce
             {
                 m_RoleData.Power = 0;
                 m_HpBar.ChangePower(m_RoleData.Power);
-                GameEntry.Event.Fire(this,
-                    ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {1,2,3,4,5},
-                        m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 20));
+                switch (m_RoleData.SkillType)
+                {
+                    case 1:
+                        GameEntry.Event.Fire(this,
+                            ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {1, 2, 3, 4, 5},
+                                m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 30));
+                        break;
+                    case 2:
+                        GameEntry.Event.Fire(this,
+                            ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {3, 4, 5},
+                                m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 40));
+                        break;
+                    case 3:
+                        GameEntry.Event.Fire(this,
+                            ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {1, 2},
+                                m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 50));
+                        break;
+                    case 0:
+                        GameEntry.Event.Fire(this,
+                            ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {1, 3, 5},
+                                m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 40));
+                        break;
+                    case 4:
+                        GameEntry.Event.Fire(this,
+                            ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {1, 2, 3, 4, 5},
+                                m_RoleData.Camp == CampType.Enemy ? CampType.Enemy : CampType.Player, -60));
+                        break;
+                }
             }
             else
             {
@@ -155,16 +179,40 @@ namespace StarForce
                 m_HpBar.ChangePower(m_RoleData.Power);
                 GameEntry.Event.Fire(this,
                     ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {target},
-                        m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 40));
+                        m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 30));
             }
-           
         }
 
         public void SkillEnd()
         {
-            GameEntry.Event.Fire(this,
-                ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {1,2,3,4,5},
-                    m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 60));
+            switch (m_RoleData.SkillType)
+            {
+                case 1:
+                    GameEntry.Event.Fire(this,
+                        ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {1, 2, 3, 4, 5},
+                            m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 50));
+                    break;
+                case 2:
+                    GameEntry.Event.Fire(this,
+                        ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {3, 4, 5},
+                            m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 80));
+                    break;
+                case 3:
+                    GameEntry.Event.Fire(this,
+                        ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {1, 2},
+                            m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 100));
+                    break;
+                case 4:
+                    GameEntry.Event.Fire(this,
+                        ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {1, 3, 5},
+                            m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 80));
+                    break;
+                case 0:
+                    GameEntry.Event.Fire(this,
+                        ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {5},
+                            m_RoleData.Camp == CampType.Enemy ? CampType.Enemy : CampType.Player, -100));
+                    break;
+            }
         }
     }
 }

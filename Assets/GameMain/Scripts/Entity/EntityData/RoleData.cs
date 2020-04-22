@@ -12,7 +12,8 @@
         private int m_Atk;
 
         private bool m_Die;
-        
+
+        private int m_SkillType;
         public CampType Camp
         {
             get { return m_Camp; }
@@ -59,6 +60,12 @@
         {
             get { return m_Die; }
             set { m_Die = value; }
+        }
+
+        public int SkillType
+        {
+            get { return m_SkillType; }
+            set { m_SkillType = value; }
         }
 
         public RoleData(int entityId, int typeId) : base(entityId, typeId)

@@ -44,13 +44,7 @@ namespace StarForce
             GameEntry.Event.Subscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
         }
 
-
-        // public void OnDestroy()
-        // {
-        //     GameEntry.Event.Unsubscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
-        // }
-
-        protected void OnShowEntitySuccess(object sender, GameEventArgs e)
+        private void OnShowEntitySuccess(object sender, GameEventArgs e)
         {
             ShowEntitySuccessEventArgs ne = e as ShowEntitySuccessEventArgs;
             if (ne == null)
