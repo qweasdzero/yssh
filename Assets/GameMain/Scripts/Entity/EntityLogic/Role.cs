@@ -157,7 +157,6 @@ namespace StarForce
                     ReferencePool.Acquire<AtkEndEventArgs>().Fill(new List<int>() {target},
                         m_RoleData.Camp == CampType.Player ? CampType.Enemy : CampType.Player, 40));
             }
-           
         }
 
         public void SkillEnd()

@@ -253,6 +253,25 @@ namespace StarForce
 
         private List<Role> m_SkillList;
         private Stack<Role> m_UseSkill;
+        private Stack<Role> m_ExtraSkill;
+
+        public List<Role> SkillList
+        {
+            get { return m_SkillList; }
+            set { m_SkillList = value; }
+        }
+
+        public Stack<Role> UseSkill
+        {
+            get { return m_UseSkill; }
+            set { m_UseSkill = value; }
+        }
+
+        public Stack<Role> ExtraSkill
+        {
+            get { return m_ExtraSkill; }
+            set { m_ExtraSkill = value; }
+        }
 
         /// <summary>
         /// 主动技能释放排序
