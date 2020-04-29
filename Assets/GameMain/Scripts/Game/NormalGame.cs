@@ -201,7 +201,8 @@ namespace StarForce
                     {
                         GameEntry.Event.Fire(this,
                             ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>(1) {target},
-                                GetCamp(role.Camp, skill.TargetType), skill.Buff,skill.BuffTime,(int)skill.BuffValue*role.Attack));
+                                GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
+                                (int) skill.BuffValue * role.Attack));
                     }
                 }
             }
@@ -231,6 +232,13 @@ namespace StarForce
                     GameEntry.Event.Fire(this,
                         ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>(1) {target},
                             GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                    if (skill.Buff != Buff.Default)
+                    {
+                        GameEntry.Event.Fire(this,
+                            ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>(1) {target},
+                                GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
+                                (int) skill.BuffValue * role.Attack));
+                    }
                 }
             }
         }
@@ -247,6 +255,14 @@ namespace StarForce
                 GameEntry.Event.Fire(this,
                     ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>() {1, 2},
                         GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                if (skill.Buff != Buff.Default)
+                {
+                    GameEntry.Event.Fire(this,
+                        ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>() {1, 2},
+                            GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
+                            (int) skill.BuffValue * role.Attack));
+                }
+
                 return true;
             }
         }
@@ -287,6 +303,14 @@ namespace StarForce
                 GameEntry.Event.Fire(this,
                     ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>() {3, 4, 5},
                         GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                if (skill.Buff != Buff.Default)
+                {
+                    GameEntry.Event.Fire(this,
+                        ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>() {3, 4, 5},
+                            GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
+                            (int) skill.BuffValue * role.Attack));
+                }
+
                 return true;
             }
         }
@@ -323,6 +347,12 @@ namespace StarForce
             GameEntry.Event.Fire(this,
                 ReferencePool.Acquire<HurtEventArgs>()
                     .Fill(list, GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+            if (skill.Buff != Buff.Default)
+            {
+                GameEntry.Event.Fire(this,
+                    ReferencePool.Acquire<ExertBuffEventArgs>().Fill(list, GetCamp(role.Camp, skill.TargetType),
+                        skill.Buff, skill.BuffTime, (int) skill.BuffValue * role.Attack));
+            }
         }
 
         private void GetAll(RoleImpactData role, Skill skill)
@@ -330,6 +360,13 @@ namespace StarForce
             GameEntry.Event.Fire(this,
                 ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>() {1, 2, 3, 4, 5},
                     GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+            if (skill.Buff != Buff.Default)
+            {
+                GameEntry.Event.Fire(this,
+                    ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>() {1, 2, 3, 4, 5},
+                        GetCamp(role.Camp, skill.TargetType),
+                        skill.Buff, skill.BuffTime, (int) skill.BuffValue * role.Attack));
+            }
         }
     }
 
@@ -366,7 +403,7 @@ namespace StarForce
         SlowDown,
     }
 
-    public struct BuffState
+    public class BuffState
     {
         private Buff m_Buff;
 
@@ -413,10 +450,11 @@ namespace StarForce
         public Buff Buff;
 
         public int BuffTime;
-        
+
         public double BuffValue;
 
-        public Skill(int id, SkillType skillType, TargetType targetType, double magnification, Buff buff,int buffTime,double buffValue)
+        public Skill(int id, SkillType skillType, TargetType targetType, double magnification, Buff buff, int buffTime,
+            double buffValue)
         {
             Id = id;
             SkillType = skillType;

@@ -138,7 +138,6 @@ namespace StarForce
         public Dictionary<int, Skill> Dic
         {
             get { return m_Dic; }
-            set { m_Dic = value; }
         }
 
         protected override void Awake()

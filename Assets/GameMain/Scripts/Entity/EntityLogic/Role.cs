@@ -61,6 +61,7 @@ namespace StarForce
             GameEntry.Event.Subscribe(AtkEventArgs.EventId, OnAtk);
             GameEntry.Event.Subscribe(HurtEventArgs.EventId, OnAtkEnd);
             GameEntry.Event.Subscribe(ExertBuffEventArgs.EventId, OnExertBuff);
+            GameEntry.Event.Subscribe(BuffSettlementEventArgs.EventId, OnBuffSettlement);
             GameEntry.Event.Subscribe(SkillEventArgs.EventId, OnSkill);
             GameEntry.Event.Subscribe(ShowEntitySuccessEventArgs.EventId, OnShowHpBar);
         }
@@ -85,8 +86,58 @@ namespace StarForce
             GameEntry.Event.Unsubscribe(AtkEventArgs.EventId, OnAtk);
             GameEntry.Event.Unsubscribe(HurtEventArgs.EventId, OnAtkEnd);
             GameEntry.Event.Unsubscribe(ExertBuffEventArgs.EventId, OnExertBuff);
+            GameEntry.Event.Unsubscribe(BuffSettlementEventArgs.EventId, OnBuffSettlement);
             GameEntry.Event.Unsubscribe(SkillEventArgs.EventId, OnSkill);
             GameEntry.Event.Unsubscribe(ShowEntitySuccessEventArgs.EventId, OnShowHpBar);
+        }
+
+        private void OnBuffSettlement(object sender, GameEventArgs e)
+        {
+            BuffSettlementEventArgs ne = e as BuffSettlementEventArgs;
+            if (ne == null)
+            {
+                return;
+            }
+
+            List<BuffState> list = new List<BuffState>();
+            foreach (BuffState buffState in m_RoleData.BuffState)
+            {
+                if (buffState.Buff == Buff.Poisoning)
+                {
+                    OnHurt(buffState.Value);
+                    buffState.Round -= 1;
+                    if (buffState.Round <= 0)
+                    {
+                        list.Add(buffState);
+                    }
+                }
+            }
+
+            if (list.Count > 0)
+            {
+                foreach (BuffState buffState in list)
+                {
+                    m_RoleData.BuffState.Remove(buffState);
+                }
+            }
+        }
+
+        private void OnHurt(int hurt)
+        {
+            m_RoleData.Hp -= hurt;
+            if (m_RoleData.Hp > m_RoleData.HpMax)
+            {
+                m_RoleData.Hp = m_RoleData.HpMax;
+            }
+
+            m_HpBar.ChangeHp(m_RoleData.Hp);
+            if (m_RoleData.Hp <= 0)
+            {
+                m_Sprite.enabled = false;
+                m_RoleData.Die = true;
+                GameEntry.Event.Fire(this,
+                    ReferencePool.Acquire<RoleDieEventArgs>().Fill(m_RoleData.Seat, m_RoleData.Camp));
+            }
         }
 
         private void OnSkill(object sender, GameEventArgs e)
@@ -115,23 +166,10 @@ namespace StarForce
             if (ne.CampType == m_RoleData.Camp && ne.Seat.Contains(m_RoleData.Seat))
             {
                 Log.Info("Seat:" + m_RoleData.Seat + "__Camp:" + m_RoleData.Camp + "__Hurt:" + ne.Hurt);
-                m_RoleData.Hp -= ne.Hurt;
-                if (m_RoleData.Hp > m_RoleData.HpMax)
-                {
-                    m_RoleData.Hp = m_RoleData.HpMax;
-                }
-
-                m_HpBar.ChangeHp(m_RoleData.Hp);
-                if (m_RoleData.Hp <= 0)
-                {
-                    m_Sprite.enabled = false;
-                    m_RoleData.Die = true;
-                    GameEntry.Event.Fire(this,
-                        ReferencePool.Acquire<RoleDieEventArgs>().Fill(m_RoleData.Seat, m_RoleData.Camp));
-                }
+                OnHurt(ne.Hurt);
             }
-        } 
-        
+        }
+
         private void OnExertBuff(object sender, GameEventArgs e)
         {
             ExertBuffEventArgs ne = e as ExertBuffEventArgs;
@@ -142,7 +180,7 @@ namespace StarForce
 
             if (ne.CampType == m_RoleData.Camp && ne.Seat.Contains(m_RoleData.Seat))
             {
-                m_RoleData.BuffState.Add(new BuffState(ne.Buff,ne.BuffTime,ne.BuffValue));
+                m_RoleData.BuffState.Add(new BuffState(ne.Buff, ne.BuffTime, ne.BuffValue));
             }
         }
 

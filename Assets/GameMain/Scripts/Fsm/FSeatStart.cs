@@ -17,7 +17,7 @@ namespace StarForce
             //计算下一个目标
             if (fsm.Owner.Seat >= 5)
             {
-                ChangeState<FRoundStart>(fsm);
+                ChangeState<FRoundEnd>(fsm);
                 return;
             }
             
