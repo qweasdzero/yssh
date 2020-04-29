@@ -9,11 +9,6 @@ namespace StarForce
         protected override void OnEnter(IFsm<NormalGame> fsm)
         {
             base.OnEnter(fsm);
-            if (fsm.Owner.SlowAtk.Count > 0)
-            {
-                
-            }
-            
             GameEntry.Event.Fire(this, ReferencePool.Acquire<BuffSettlementEventArgs>().Fill());
             ChangeState<FRoundStart>(fsm);
         }

@@ -204,13 +204,13 @@ namespace StarForce
 
                     GameEntry.Event.Fire(this,
                         ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>(1) {target},
-                            GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                            GetCamp(role.Camp, skill.TargetType), (int) (skill.Magnification * role.Attack)));
                     if (skill.Buff != Buff.Default)
                     {
                         GameEntry.Event.Fire(this,
                             ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>(1) {target},
                                 GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
-                                (int) skill.BuffValue * role.Attack));
+                                (int) (skill.BuffValue * role.Attack)));
                     }
                     else
                     {
@@ -243,13 +243,13 @@ namespace StarForce
 
                     GameEntry.Event.Fire(this,
                         ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>(1) {target},
-                            GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                            GetCamp(role.Camp, skill.TargetType), (int) (skill.Magnification * role.Attack)));
                     if (skill.Buff != Buff.Default)
                     {
                         GameEntry.Event.Fire(this,
                             ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>(1) {target},
                                 GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
-                                (int) skill.BuffValue * role.Attack));
+                                (int) (skill.BuffValue * role.Attack)));
                     }
                     else
                     {
@@ -270,13 +270,13 @@ namespace StarForce
             {
                 GameEntry.Event.Fire(this,
                     ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>() {1, 2},
-                        GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                        GetCamp(role.Camp, skill.TargetType), (int) (skill.Magnification * role.Attack)));
                 if (skill.Buff != Buff.Default)
                 {
                     GameEntry.Event.Fire(this,
                         ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>() {1, 2},
                             GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
-                            (int) skill.BuffValue * role.Attack));
+                            (int)( skill.BuffValue * role.Attack)));
                 }
                 else
                 {
@@ -322,13 +322,13 @@ namespace StarForce
             {
                 GameEntry.Event.Fire(this,
                     ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>() {3, 4, 5},
-                        GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                        GetCamp(role.Camp, skill.TargetType), (int) (skill.Magnification * role.Attack)));
                 if (skill.Buff != Buff.Default)
                 {
                     GameEntry.Event.Fire(this,
                         ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>() {3, 4, 5},
                             GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
-                            (int) skill.BuffValue * role.Attack));
+                            (int) (skill.BuffValue * role.Attack)));
                 }
                 else
                 {
@@ -370,12 +370,12 @@ namespace StarForce
 
             GameEntry.Event.Fire(this,
                 ReferencePool.Acquire<HurtEventArgs>()
-                    .Fill(list, GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                    .Fill(list, GetCamp(role.Camp, skill.TargetType), (int) (skill.Magnification * role.Attack)));
             if (skill.Buff != Buff.Default)
             {
                 GameEntry.Event.Fire(this,
                     ReferencePool.Acquire<ExertBuffEventArgs>().Fill(list, GetCamp(role.Camp, skill.TargetType),
-                        skill.Buff, skill.BuffTime, (int) skill.BuffValue * role.Attack));
+                        skill.Buff, skill.BuffTime, (int) (skill.BuffValue * role.Attack)));
             }
             else
             {
@@ -387,13 +387,13 @@ namespace StarForce
         {
             GameEntry.Event.Fire(this,
                 ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>() {1, 2, 3, 4, 5},
-                    GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                    GetCamp(role.Camp, skill.TargetType), (int) (skill.Magnification * role.Attack)));
             if (skill.Buff != Buff.Default)
             {
                 GameEntry.Event.Fire(this,
                     ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>() {1, 2, 3, 4, 5},
                         GetCamp(role.Camp, skill.TargetType),
-                        skill.Buff, skill.BuffTime, (int) skill.BuffValue * role.Attack));
+                        skill.Buff, skill.BuffTime, (int) (skill.BuffValue * role.Attack)));
             }
             else
             {

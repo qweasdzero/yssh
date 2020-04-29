@@ -71,6 +71,11 @@ namespace StarForce
 
         private void GetAttacker()
         {
+            if (IsGameOver())
+            {
+                return;
+            }
+
             if (m_Fsm.Owner.SkillList.Count > 0)
             {
                 SkillQueue();
@@ -160,33 +165,26 @@ namespace StarForce
         /// <summary>
         /// 判断战斗结束
         /// </summary>
-        private void IsGameOver(CampType campType)
+        private bool IsGameOver()
         {
-            switch (campType)
+            foreach (Role role in GameEntry.Role.EnemyRole.Values)
             {
-                case CampType.Player:
-                    foreach (Role role in GameEntry.Role.EnemyRole.Values)
-                    {
-                        if (!role.GetImpact().Die)
-                        {
-                            return;
-                        }
-                    }
+                if (!role.GetImpact().Die)
+                {
+                    return false;
+                }
+            }
 
-                    break;
-                case CampType.Enemy:
-                    foreach (Role role in GameEntry.Role.MyRole.Values)
-                    {
-                        if (!role.GetImpact().Die)
-                        {
-                            return;
-                        }
-                    }
-
-                    break;
+            foreach (Role role in GameEntry.Role.MyRole.Values)
+            {
+                if (!role.GetImpact().Die)
+                {
+                    return false;
+                }
             }
 
             ChangeState<FEnd>(m_Fsm);
+            return true;
         }
 
         protected override void OnLeave(IFsm<NormalGame> fsm, bool isShutdown)

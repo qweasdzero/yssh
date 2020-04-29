@@ -101,6 +101,7 @@ namespace StarForce
 
             if (m_RoleData.BuffState.ContainsKey(Buff.Poisoning))
             {
+                Log.Info(m_RoleData.BuffState[Buff.Poisoning].Value);
                 OnHurt(m_RoleData.BuffState[Buff.Poisoning].Value);
                 m_RoleData.BuffState[Buff.Poisoning].Round -= 1;
                 if (m_RoleData.BuffState[Buff.Poisoning].Round <= 0)
@@ -168,6 +169,7 @@ namespace StarForce
 
             if (ne.CampType == m_RoleData.Camp && ne.Seat.Contains(m_RoleData.Seat))
             {
+                Log.Info(ne.BuffValue);
                 m_RoleData.BuffState[ne.Buff] = new BuffState(ne.Buff, ne.BuffTime, ne.BuffValue);
             }
         }
