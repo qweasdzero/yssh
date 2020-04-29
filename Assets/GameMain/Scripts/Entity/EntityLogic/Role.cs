@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GameFramework;
 using GameFramework.Event;
 using SG1;
@@ -117,6 +118,16 @@ namespace StarForce
             if (m_RoleData.Hp > m_RoleData.HpMax)
             {
                 m_RoleData.Hp = m_RoleData.HpMax;
+            }
+
+            if (hurt < 0)
+            {
+                GameEntry.Role.HudText.NewText("+" + Math.Abs(hurt), CachedTransform, Color.green, 16, 10, 0.5f, 0,
+                    bl_Guidance.Up);
+            }
+            else
+            {
+                GameEntry.Role.HudText.NewText("-" + hurt, CachedTransform, Color.red, 16, 10, 0.5f, 0, bl_Guidance.Up);
             }
 
             m_HpBar.ChangeHp(m_RoleData.Hp);

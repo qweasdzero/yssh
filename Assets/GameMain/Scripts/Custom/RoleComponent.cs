@@ -54,6 +54,7 @@ namespace StarForce
             set { m_EnemyAtkDic = value; }
         }
 
-     
+        [SerializeField]public bl_HUDText HudText;
+
     }
 }

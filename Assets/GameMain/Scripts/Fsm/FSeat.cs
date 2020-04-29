@@ -167,24 +167,37 @@ namespace StarForce
         /// </summary>
         private bool IsGameOver()
         {
+            bool gameOver = true;
             foreach (Role role in GameEntry.Role.EnemyRole.Values)
             {
                 if (!role.GetImpact().Die)
                 {
-                    return false;
+                    gameOver = false;
                 }
             }
 
+            if (gameOver)
+            {
+                ChangeState<FEnd>(m_Fsm);
+                return true;
+            }
+
+            gameOver = true;
             foreach (Role role in GameEntry.Role.MyRole.Values)
             {
                 if (!role.GetImpact().Die)
                 {
-                    return false;
+                    gameOver = false;
                 }
             }
 
-            ChangeState<FEnd>(m_Fsm);
-            return true;
+            if (gameOver)
+            {
+                ChangeState<FEnd>(m_Fsm);
+                return true;
+            }
+
+            return false;
         }
 
         protected override void OnLeave(IFsm<NormalGame> fsm, bool isShutdown)
