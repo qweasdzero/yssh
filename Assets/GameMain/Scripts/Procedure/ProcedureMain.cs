@@ -78,7 +78,7 @@ namespace StarForce
                 m_CurrentGame = null;
             }
 
-            GameEntry.Event.Subscribe(StartGameEventArgs.EventId,OnStart);
+            GameEntry.Event.Unsubscribe(StartGameEventArgs.EventId,OnStart);
             base.OnLeave(procedureOwner, isShutdown);
         }
 

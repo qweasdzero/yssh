@@ -150,7 +150,7 @@ namespace StarForce
                 {2, new Skill(2, SkillType.All, TargetType.Teammate, -1, Buff.Default, 0, 0)}, //群体加血
                 {3, new Skill(3, SkillType.Back, TargetType.Enemy, 1.3, Buff.Poisoning, 1, 0.2)}, //后排中毒
                 {4, new Skill(4, SkillType.Chain, TargetType.Enemy, 1.5, Buff.Default, 0, 0)}, //链式伤害
-                {5, new Skill(5, SkillType.Front, TargetType.Enemy, 1.8, Buff.SlowDown, 1, 0)} //前排减速
+                {5, new Skill(5, SkillType.Front, TargetType.Enemy, 1.8, Buff.Default, 1, 0)} //前排伤害
             };
         }
     }

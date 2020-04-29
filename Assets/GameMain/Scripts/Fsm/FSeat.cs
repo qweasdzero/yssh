@@ -16,70 +16,11 @@ namespace StarForce
         protected override void OnEnter(IFsm<NormalGame> fsm)
         {
             base.OnEnter(fsm);
-            GameEntry.Event.Subscribe(HurtEventArgs.EventId, OnAtkEnd);
+            GameEntry.Event.Subscribe(NextRoleEventArgs.EventId, OnAtkEnd);
+            GameEntry.Event.Subscribe(ExertBuffEventArgs.EventId, OnAtkEnd);
             m_Fsm = fsm;
 
             GetAttacker();
-        }
-
-        /// <summary>
-        /// 获取攻击目标
-        /// </summary>
-        /// <param name="role"></param>
-        /// <returns></returns>
-        private int GetAtkTarget(RoleImpactData role)
-        {
-            int target = 0;
-            if (role.Camp == CampType.Player)
-            {
-                if (GameEntry.Role.MyAtkDic.TryGetValue(role.Seat, out Stack<int> stack))
-                {
-                    while (target == 0)
-                    {
-                        if (stack.Count <= 0)
-                        {
-                            return 0;
-                        }
-
-                        var peek = stack.Peek();
-                        if (GameEntry.Role.EnemyRole[peek].GetImpact().Die)
-                        {
-                            stack.Pop();
-                        }
-                        else
-                        {
-                            target = peek;
-                        }
-                    }
-                }
-            }
-
-            if (role.Camp == CampType.Enemy)
-            {
-                if (GameEntry.Role.EnemyAtkDic.TryGetValue(role.Seat, out Stack<int> stack))
-                {
-                    while (target == 0)
-                    {
-                        if (stack.Count <= 0)
-                        {
-                            return 0;
-                        }
-
-                        var peek = stack.Peek();
-                        if (GameEntry.Role.MyRole[peek].GetImpact().Die)
-                        {
-                            stack.Pop();
-                        }
-                        else
-                        {
-                            target = peek;
-                        }
-                    }
-                }
-            }
-
-
-            return target;
         }
 
         /// <summary>
@@ -155,23 +96,25 @@ namespace StarForce
                 {
                     if (m_Fsm.Owner.First.GetImpact().BuffState.ContainsKey(Buff.Vertigo))
                     {
+                        Log.Info("Vertigo");
                         m_Fsm.Owner.First.OnActionBuff();
+                        m_Fsm.Owner.First = null;
                         GetAttacker();
                     }
-                    else if (m_Fsm.Owner.First.GetImpact().BuffState.ContainsKey(Buff.SlowDown))
-                    {
-                        m_Fsm.Owner.SlowAtk.AddFirst(m_Fsm.Owner.First);
-                        m_Fsm.Owner.First.OnActionBuff();
-                        GetAttacker();
-                    }
+                    // else if (m_Fsm.Owner.First.GetImpact().BuffState.ContainsKey(Buff.SlowDown))
+                    // {
+                    //     m_Fsm.Owner.SlowAtk.AddFirst(m_Fsm.Owner.First);
+                    //     m_Fsm.Owner.First.OnActionBuff();
+                    //     GetAttacker();
+                    // }
                     else
                     {
                         GameEntry.Event.Fire(this,
                             ReferencePool.Acquire<AtkEventArgs>()
                                 .Fill(m_Fsm.Owner.Seat, m_Fsm.Owner.First.GetImpact().Camp));
+                        m_Fsm.Owner.First = null;
                     }
 
-                    m_Fsm.Owner.First = null;
                     return;
                 }
             }
@@ -182,23 +125,25 @@ namespace StarForce
                 {
                     if (m_Fsm.Owner.Second.GetImpact().BuffState.ContainsKey(Buff.Vertigo))
                     {
+                        Log.Info("Vertigo");
                         m_Fsm.Owner.Second.OnActionBuff();
+                        m_Fsm.Owner.Second = null;
                         GetAttacker();
                     }
-                    else if (m_Fsm.Owner.Second.GetImpact().BuffState.ContainsKey(Buff.SlowDown))
-                    {
-                        m_Fsm.Owner.SlowAtk.AddFirst(m_Fsm.Owner.Second);
-                        m_Fsm.Owner.Second.OnActionBuff();
-                        GetAttacker();
-                    }
+                    // else if (m_Fsm.Owner.Second.GetImpact().BuffState.ContainsKey(Buff.SlowDown))
+                    // {
+                    //     m_Fsm.Owner.SlowAtk.AddFirst(m_Fsm.Owner.Second);
+                    //     m_Fsm.Owner.Second.OnActionBuff();
+                    //     GetAttacker();
+                    // }
                     else
                     {
                         GameEntry.Event.Fire(this,
                             ReferencePool.Acquire<AtkEventArgs>()
                                 .Fill(m_Fsm.Owner.Seat, m_Fsm.Owner.Second.GetImpact().Camp));
+                        m_Fsm.Owner.Second = null;
                     }
 
-                    m_Fsm.Owner.Second = null;
                     return;
                 }
             }
@@ -247,18 +192,16 @@ namespace StarForce
         protected override void OnLeave(IFsm<NormalGame> fsm, bool isShutdown)
         {
             base.OnLeave(fsm, isShutdown);
-            GameEntry.Event.Unsubscribe(HurtEventArgs.EventId, OnAtkEnd);
+            GameEntry.Event.Unsubscribe(NextRoleEventArgs.EventId, OnAtkEnd);
+            GameEntry.Event.Unsubscribe(ExertBuffEventArgs.EventId, OnAtkEnd);
         }
 
         private void OnAtkEnd(object sender, GameEventArgs e)
         {
-            HurtEventArgs ne = e as HurtEventArgs;
-            if (ne == null)
+            if (e is NextRoleEventArgs || e is ExertBuffEventArgs)
             {
-                return;
+                GetAttacker();
             }
-
-            GetAttacker();
         }
     }
 }

@@ -61,6 +61,7 @@ namespace StarForce
             base.Initialize();
             m_SkillList = new List<Role>();
             m_UseSkill = new Stack<Role>();
+            m_SlowAtk = new LinkedList<Role>();
             FsmBase[] state = new FsmBase[]
             {
                 new FSeat(), new FStart(), new FRoundEnd(), new FRoundStart(),
@@ -116,7 +117,7 @@ namespace StarForce
         private Stack<Role> m_UseSkill;
         private Stack<Role> m_ExtraSkill;
         private LinkedList<Role> m_SlowAtk;
-        
+
         public List<Role> SkillList
         {
             get { return m_SkillList; }
@@ -211,6 +212,10 @@ namespace StarForce
                                 GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
                                 (int) skill.BuffValue * role.Attack));
                     }
+                    else
+                    {
+                        GameEntry.Event.Fire(this, ReferencePool.Acquire<NextRoleEventArgs>().Fill());
+                    }
                 }
             }
 
@@ -246,6 +251,10 @@ namespace StarForce
                                 GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
                                 (int) skill.BuffValue * role.Attack));
                     }
+                    else
+                    {
+                        GameEntry.Event.Fire(this, ReferencePool.Acquire<NextRoleEventArgs>().Fill());
+                    }
                 }
             }
         }
@@ -268,6 +277,10 @@ namespace StarForce
                         ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>() {1, 2},
                             GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
                             (int) skill.BuffValue * role.Attack));
+                }
+                else
+                {
+                    GameEntry.Event.Fire(this, ReferencePool.Acquire<NextRoleEventArgs>().Fill());
                 }
 
                 return true;
@@ -317,6 +330,10 @@ namespace StarForce
                             GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
                             (int) skill.BuffValue * role.Attack));
                 }
+                else
+                {
+                    GameEntry.Event.Fire(this, ReferencePool.Acquire<NextRoleEventArgs>().Fill());
+                }
 
                 return true;
             }
@@ -360,6 +377,10 @@ namespace StarForce
                     ReferencePool.Acquire<ExertBuffEventArgs>().Fill(list, GetCamp(role.Camp, skill.TargetType),
                         skill.Buff, skill.BuffTime, (int) skill.BuffValue * role.Attack));
             }
+            else
+            {
+                GameEntry.Event.Fire(this, ReferencePool.Acquire<NextRoleEventArgs>().Fill());
+            }
         }
 
         private void GetAll(RoleImpactData role, Skill skill)
@@ -373,6 +394,10 @@ namespace StarForce
                     ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>() {1, 2, 3, 4, 5},
                         GetCamp(role.Camp, skill.TargetType),
                         skill.Buff, skill.BuffTime, (int) skill.BuffValue * role.Attack));
+            }
+            else
+            {
+                GameEntry.Event.Fire(this, ReferencePool.Acquire<NextRoleEventArgs>().Fill());
             }
         }
     }
@@ -404,10 +429,10 @@ namespace StarForce
         /// </summary>
         Vertigo,
 
-        /// <summary>
-        /// 减速
-        /// </summary>
-        SlowDown,
+        // /// <summary>
+        // /// 减速
+        // /// </summary>
+        // SlowDown,
     }
 
     public class BuffState
