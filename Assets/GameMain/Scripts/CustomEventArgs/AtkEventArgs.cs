@@ -20,13 +20,11 @@ namespace StarForce
 
         public int Seat;
         public CampType CampType;
-        public int EnemySeat;
 
-        public AtkEventArgs Fill(int seat, CampType campType,int enemyseat)
+        public AtkEventArgs Fill(int seat, CampType campType)
         {
             Seat = seat;
             CampType = campType;
-            EnemySeat = enemyseat;
             return this;
         }
     }

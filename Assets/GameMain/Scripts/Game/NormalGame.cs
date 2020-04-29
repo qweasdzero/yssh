@@ -115,7 +115,8 @@ namespace StarForce
         private List<Role> m_SkillList;
         private Stack<Role> m_UseSkill;
         private Stack<Role> m_ExtraSkill;
-
+        private LinkedList<Role> m_SlowAtk;
+        
         public List<Role> SkillList
         {
             get { return m_SkillList; }
@@ -132,6 +133,12 @@ namespace StarForce
         {
             get { return m_ExtraSkill; }
             set { m_ExtraSkill = value; }
+        }
+
+        public LinkedList<Role> SlowAtk
+        {
+            get { return m_SlowAtk; }
+            set { m_SlowAtk = value; }
         }
 
         private void GetSkillTarget(Skill skill, RoleImpactData role)

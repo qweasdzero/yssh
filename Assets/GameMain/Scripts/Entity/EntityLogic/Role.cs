@@ -12,7 +12,6 @@ namespace StarForce
         private RoleData m_RoleData;
         private Animator m_Anim;
         private static readonly int Atk = Animator.StringToHash("Atk");
-        private int target;
         private HpBar m_HpBar;
         private int m_HpId;
         private SpriteRenderer m_Sprite;
@@ -99,25 +98,13 @@ namespace StarForce
                 return;
             }
 
-            List<BuffState> list = new List<BuffState>();
-            foreach (BuffState buffState in m_RoleData.BuffState)
+            if (m_RoleData.BuffState.ContainsKey(Buff.Poisoning))
             {
-                if (buffState.Buff == Buff.Poisoning)
+                OnHurt(m_RoleData.BuffState[Buff.Poisoning].Value);
+                m_RoleData.BuffState[Buff.Poisoning].Round -= 1;
+                if (m_RoleData.BuffState[Buff.Poisoning].Round <= 0)
                 {
-                    OnHurt(buffState.Value);
-                    buffState.Round -= 1;
-                    if (buffState.Round <= 0)
-                    {
-                        list.Add(buffState);
-                    }
-                }
-            }
-
-            if (list.Count > 0)
-            {
-                foreach (BuffState buffState in list)
-                {
-                    m_RoleData.BuffState.Remove(buffState);
+                    m_RoleData.BuffState.Remove(Buff.Poisoning); 
                 }
             }
         }
@@ -180,7 +167,30 @@ namespace StarForce
 
             if (ne.CampType == m_RoleData.Camp && ne.Seat.Contains(m_RoleData.Seat))
             {
-                m_RoleData.BuffState.Add(new BuffState(ne.Buff, ne.BuffTime, ne.BuffValue));
+                m_RoleData.BuffState.Add(ne.Buff, new BuffState(ne.Buff, ne.BuffTime, ne.BuffValue));
+            }
+        }
+
+        public void OnActionBuff()
+        {
+            if (m_RoleData.BuffState.ContainsKey(Buff.Vertigo))
+            {
+                OnHurt(m_RoleData.BuffState[Buff.Vertigo].Value);
+                m_RoleData.BuffState[Buff.Vertigo].Round -= 1;
+                if (m_RoleData.BuffState[Buff.Vertigo].Round <= 0)
+                {
+                    m_RoleData.BuffState.Remove(Buff.Vertigo); 
+                }
+            }
+            
+            if (m_RoleData.BuffState.ContainsKey(Buff.SlowDown))
+            {
+                OnHurt(m_RoleData.BuffState[Buff.SlowDown].Value);
+                m_RoleData.BuffState[Buff.SlowDown].Round -= 1;
+                if (m_RoleData.BuffState[Buff.SlowDown].Round <= 0)
+                {
+                    m_RoleData.BuffState.Remove(Buff.SlowDown); 
+                }
             }
         }
 
@@ -195,7 +205,6 @@ namespace StarForce
             if (ne.CampType == m_RoleData.Camp && ne.Seat == m_RoleData.Seat)
             {
                 m_Anim.SetTrigger(Atk);
-                target = ne.EnemySeat;
             }
         }
 

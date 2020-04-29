@@ -143,25 +143,34 @@ namespace StarForce
                     GetAttacker();
                     return;
                 }
+
                 GameEntry.Event.Fire(this,
                     ReferencePool.Acquire<SkillEventArgs>().Fill(role.GetImpact().Seat, role.GetImpact().Camp));
                 return;
             }
-            
+
             if (m_Fsm.Owner.First != null)
             {
                 if (!m_Fsm.Owner.First.GetImpact().Die) //判断是否可以攻击
                 {
-                    int target = GetAtkTarget(m_Fsm.Owner.First.GetImpact());
-                    if (target == 0)
+                    if (m_Fsm.Owner.First.GetImpact().BuffState.ContainsKey(Buff.Vertigo))
                     {
-                        IsGameOver(m_Fsm.Owner.First.GetImpact().Camp);
-                        return;
+                        m_Fsm.Owner.First.OnActionBuff();
+                        GetAttacker();
+                    }
+                    else if (m_Fsm.Owner.First.GetImpact().BuffState.ContainsKey(Buff.SlowDown))
+                    {
+                        m_Fsm.Owner.SlowAtk.AddFirst(m_Fsm.Owner.First);
+                        m_Fsm.Owner.First.OnActionBuff();
+                        GetAttacker();
+                    }
+                    else
+                    {
+                        GameEntry.Event.Fire(this,
+                            ReferencePool.Acquire<AtkEventArgs>()
+                                .Fill(m_Fsm.Owner.Seat, m_Fsm.Owner.First.GetImpact().Camp));
                     }
 
-                    GameEntry.Event.Fire(this,
-                        ReferencePool.Acquire<AtkEventArgs>()
-                            .Fill(m_Fsm.Owner.Seat, m_Fsm.Owner.First.GetImpact().Camp, target));
                     m_Fsm.Owner.First = null;
                     return;
                 }
@@ -171,17 +180,24 @@ namespace StarForce
             {
                 if (!m_Fsm.Owner.Second.GetImpact().Die) //判断是否可以攻击
                 {
-                    int target = GetAtkTarget(m_Fsm.Owner.Second.GetImpact());
-
-                    if (target == 0)
+                    if (m_Fsm.Owner.Second.GetImpact().BuffState.ContainsKey(Buff.Vertigo))
                     {
-                        IsGameOver(m_Fsm.Owner.Second.GetImpact().Camp);
-                        return;
+                        m_Fsm.Owner.Second.OnActionBuff();
+                        GetAttacker();
+                    }
+                    else if (m_Fsm.Owner.Second.GetImpact().BuffState.ContainsKey(Buff.SlowDown))
+                    {
+                        m_Fsm.Owner.SlowAtk.AddFirst(m_Fsm.Owner.Second);
+                        m_Fsm.Owner.Second.OnActionBuff();
+                        GetAttacker();
+                    }
+                    else
+                    {
+                        GameEntry.Event.Fire(this,
+                            ReferencePool.Acquire<AtkEventArgs>()
+                                .Fill(m_Fsm.Owner.Seat, m_Fsm.Owner.Second.GetImpact().Camp));
                     }
 
-                    GameEntry.Event.Fire(this,
-                        ReferencePool.Acquire<AtkEventArgs>()
-                            .Fill(m_Fsm.Owner.Seat, m_Fsm.Owner.Second.GetImpact().Camp, target));
                     m_Fsm.Owner.Second = null;
                     return;
                 }

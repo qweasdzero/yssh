@@ -79,9 +79,9 @@ namespace StarForce
             set { m_PowerId = value; }
         }
 
-        private List<BuffState> m_BuffState;
+        private Dictionary<Buff,BuffState> m_BuffState;
 
-        public List<BuffState> BuffState
+        public Dictionary<Buff,BuffState> BuffState
         {
             get { return m_BuffState; }
             set { m_BuffState = value; }

@@ -1,4 +1,5 @@
-﻿using StarForce;
+﻿using System.Collections.Generic;
+using StarForce;
 using UnityEngine;
 
 namespace SG1
@@ -90,6 +91,11 @@ namespace SG1
         public int SkillId
         {
             get { return m_Data.SkillId; }
+        }
+
+        public Dictionary<Buff, BuffState> BuffState
+        {
+            get { return m_Data.BuffState; }
         }
     }
 }
