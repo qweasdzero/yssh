@@ -20,6 +20,21 @@ namespace SG1
             }
         }
 
+        public CampType Enemy
+        {
+            get
+            {
+                if (m_Data.Camp == CampType.Player)
+                {
+                    return CampType.Enemy;
+                }
+                else
+                {
+                    return CampType.Player;
+                }
+            }
+        }
+
         public int Hp
         {
             get
@@ -55,13 +70,13 @@ namespace SG1
         public int Speed
         {
             get { return m_Data.Speed; }
-        } 
-        
+        }
+
         public Vector3 Position
         {
             get { return m_Data.Position; }
         }
-        
+
         public bool Die
         {
             get { return m_Data.Die; }
@@ -70,6 +85,11 @@ namespace SG1
         public int Seat
         {
             get { return m_Data.Seat; }
+        } 
+        
+        public int SkillId
+        {
+            get { return m_Data.SkillId; }
         }
     }
 }

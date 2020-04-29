@@ -28,8 +28,10 @@ namespace StarForce
                     Camp = CampType.Player,
                     Seat = i + 1,
                     Hp = 200,
+                    Atk = 20,
                     HpMax = 200,
                     Speed = 100 + i,
+                    SkillId = i + 1,
                 });
             }
 
@@ -40,13 +42,15 @@ namespace StarForce
                     Camp = CampType.Enemy,
                     Seat = i + 1,
                     Hp = 200,
+                    Atk = 20,
                     HpMax = 200,
                     Speed = 100 + 2 * i,
+                    SkillId = i + 1,
                 });
             }
 
             fsm.Owner.Round = 0;
-            
+
             GameEntry.Skill.Skill1Consume = 1;
             GameEntry.Skill.Skill2Consume = 3;
             GameEntry.Skill.Skill3Consume = 5;
@@ -58,7 +62,7 @@ namespace StarForce
             GameEntry.Skill.Skill3CdMax = 2;
             GameEntry.Skill.Skill4CdMax = 2;
             GameEntry.Skill.Skill5CdMax = 2;
-            
+
             GameEntry.Event.Subscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
         }
 
@@ -117,6 +121,7 @@ namespace StarForce
         protected override void OnLeave(IFsm<NormalGame> fsm, bool isShutdown)
         {
             base.OnLeave(fsm, isShutdown);
+            GameEntry.Event.Unsubscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
         }
     }
 }

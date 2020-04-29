@@ -27,6 +27,21 @@ namespace StarForce
             set { m_EnemyRole = value; }
         }
 
+        public Dictionary<int, Role> GetTarget(CampType campType)
+        {
+            switch (campType)
+            {
+                case CampType.Unknown:
+                    break;
+                case CampType.Player:
+                    return MyRole;
+                case CampType.Enemy:
+                    return EnemyRole;
+            }
+
+            return null;
+        }
+
         public Dictionary<int, Stack<int>> MyAtkDic
         {
             get { return m_MyAtkDic; }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using GameFramework;
 using GameFramework.Event;
+using GameFramework.Fsm;
 using SG1;
 using UnityGameFramework.Runtime;
 
@@ -53,33 +54,43 @@ namespace StarForce
             set { m_Second = value; }
         }
 
+        private IFsm<NormalGame> m_PlayerFsm;
+
         public override void Initialize()
         {
             base.Initialize();
             m_SkillList = new List<Role>();
             m_UseSkill = new Stack<Role>();
-            
-            GameEntry.Event.Subscribe(AtkEndEventArgs.EventId, OnAtkEnd);
+            FsmBase[] state = new FsmBase[]
+            {
+                new FSeat(), new FStart(), new FRoundEnd(), new FRoundStart(),
+                new FSeatStart(), new FEnd(),
+            };
+
+            m_PlayerFsm = GameEntry.Fsm.CreateFsm("Game", this, state);
+            m_PlayerFsm.Start<FStart>();
+
             GameEntry.Event.Subscribe(ActiveSkillEventArgs.EventId, OnActiveSkill);
-            GameEntry.Event.Subscribe(StartBattleEventArgs.EventId, OnStartBattle);
-        }
-
-        private void Start()
-        {
-            m_Seat = 1;
-            m_Round = 1;
-            m_Start = true;
-
-            
-            GameEntry.Event.Fire(this, ReferencePool.Acquire<NextRoundEventArgs>().Fill());
+            GameEntry.Event.Subscribe(AtkEndEventArgs.EventId, OnAtkEnd);
         }
 
         public override void Shutdown()
         {
             base.Shutdown();
-            GameEntry.Event.Unsubscribe(AtkEndEventArgs.EventId, OnAtkEnd);
             GameEntry.Event.Unsubscribe(ActiveSkillEventArgs.EventId, OnActiveSkill);
-            GameEntry.Event.Unsubscribe(StartBattleEventArgs.EventId, OnStartBattle);
+            GameEntry.Event.Unsubscribe(AtkEndEventArgs.EventId, OnAtkEnd);
+        }
+
+        private void OnAtkEnd(object sender, GameEventArgs e)
+        {
+            AtkEndEventArgs ne = e as AtkEndEventArgs;
+            if (ne == null)
+            {
+                return;
+            }
+
+            Skill skill = GameEntry.Skill.Dic[ne.SkillId];
+            GetSkillTarget(skill, GameEntry.Role.GetTarget(ne.CampType)[ne.Seat].GetImpact());
         }
 
         private void OnActiveSkill(object sender, GameEventArgs e)
@@ -99,156 +110,6 @@ namespace StarForce
             {
                 m_SkillList.Add(GameEntry.Role.EnemyRole[ne.Seat]);
             }
-        }
-
-        private void OnAtkEnd(object sender, GameEventArgs e)
-        {
-            AtkEndEventArgs ne = e as AtkEndEventArgs;
-            if (ne == null)
-            {
-                return;
-            }
-
-            m_Wait = false;
-        }
-
-        public override void Update(float elapseSeconds, float realElapseSeconds)
-        {
-            base.Update(elapseSeconds, realElapseSeconds);
-            if (m_Start)
-            {
-                if (!m_Wait)
-                {
-                    if (m_SkillList.Count > 0)
-                    {
-                        SkillQueue();
-                    }
-
-                    if (m_UseSkill.Count > 0)
-                    {
-                        Log.Info(m_UseSkill.Count);
-                        Role role = m_UseSkill.Pop();
-                        m_Wait = true;
-                        GameEntry.Event.Fire(this,
-                            ReferencePool.Acquire<SkillEventArgs>().Fill(role.GetImpact().Seat, role.GetImpact().Camp));
-                        return;
-                    }
-
-                    Atk();
-                }
-            }
-        }
-
-        /// <summary>
-        /// 寻找攻击者
-        /// </summary>
-        private void Atk()
-        {
-            if (m_First == null)
-            {
-                Next();
-                Role role1 = GameEntry.Role.MyRole[m_Seat];
-                Role role2 = GameEntry.Role.EnemyRole[m_Seat];
-                if (role1.GetImpact().Speed >= role2.GetImpact().Speed)
-                {
-                    m_First = role1;
-                    m_Second = role2;
-                }
-                else
-                {
-                    m_First = role2;
-                    m_Second = role1;
-                }
-
-                if (!m_First.GetImpact().Die)
-                {
-                    int target = GetAtkTarget(m_First.GetImpact());
-                    if (target == 0)
-                    {
-                        IsGameOver(m_First.GetImpact().Camp);
-                        return;
-                    }
-                    else
-                    {
-                        GameEntry.Event.Fire(this,
-                            ReferencePool.Acquire<AtkEventArgs>()
-                                .Fill(m_Seat, m_First.GetImpact().Camp, target));
-                        m_Wait = true;
-                    }
-                }
-            }
-            else
-            {
-                if (!m_Second.GetImpact().Die)
-                {
-                    int target = GetAtkTarget(m_Second.GetImpact());
-                    if (target == 0)
-                    {
-                        if (!IsGameOver(m_Second.GetImpact().Camp))
-                        {
-                            m_First = null;
-                            m_Second = null;
-                        }
-
-                        return;
-                    }
-                    else
-                    {
-                        GameEntry.Event.Fire(this,
-                            ReferencePool.Acquire<AtkEventArgs>()
-                                .Fill(m_Seat, m_Second.GetImpact().Camp, target));
-                        m_Wait = true;
-                    }
-                }
-
-                if (!IsGameOver(m_Second.GetImpact().Camp))
-                {
-                    m_First = null;
-                    m_Second = null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 下一个位置
-        /// </summary>
-        private void Next()
-        {
-          
-        }
-
-        /// <summary>
-        /// 判断战斗结束
-        /// </summary>
-        private bool IsGameOver(CampType campType)
-        {
-            switch (campType)
-            {
-                case CampType.Player:
-                    foreach (Role role in GameEntry.Role.EnemyRole.Values)
-                    {
-                        if (!role.GetImpact().Die)
-                        {
-                            return false;
-                        }
-                    }
-
-                    break;
-                case CampType.Enemy:
-                    foreach (Role role in GameEntry.Role.MyRole.Values)
-                    {
-                        if (!role.GetImpact().Die)
-                        {
-                            return false;
-                        }
-                    }
-
-                    break;
-            }
-
-            m_Start = false;
-            GameEntry.Event.Fire(this, ReferencePool.Acquire<GameOverEventArgs>().Fill());
-            return true;
         }
 
         private List<Role> m_SkillList;
@@ -273,49 +134,34 @@ namespace StarForce
             set { m_ExtraSkill = value; }
         }
 
-        /// <summary>
-        /// 主动技能释放排序
-        /// </summary>
-        private void SkillQueue()
+        private void GetSkillTarget(Skill skill, RoleImpactData role)
         {
-            if (m_UseSkill.Count > 0)
+            switch (skill.SkillType)
             {
-                foreach (Role role in m_UseSkill)
-                {
-                    m_SkillList.Add(role);
-                }
-
-                m_UseSkill.Clear();
-            }
-
-            for (int i = 0; i < m_SkillList.Count; i++) //最多做R.Length-1趟排序 
-            {
-                var exchange = false;
-                for (int j = m_SkillList.Count - 2; j >= i; j--)
-                {
-                    if (m_SkillList[j + 1].GetImpact().Seat > m_SkillList[j].GetImpact().Seat ||
-                        (m_SkillList[j + 1].GetImpact().Seat == m_SkillList[j].GetImpact().Seat &&
-                         (m_SkillList[j + 1].GetImpact().Speed <= m_SkillList[j].GetImpact().Speed))) //交换条件
-                    {
-                        var temp = m_SkillList[j + 1];
-                        m_SkillList[j + 1] = m_SkillList[j];
-                        m_SkillList[j] = temp;
-                        exchange = true; //发生了交换，故将交换标志置为真 
-                    }
-                }
-
-                if (!exchange) //本趟排序未发生交换，提前终止算法 
-                {
+                case SkillType.Positive:
+                    GetAtkTarget(role, skill);
                     break;
-                }
-            }
+                case SkillType.Front:
+                    if (!GetFront(role, skill))
+                    {
+                        GetBack(role, skill);
+                    }
 
-            for (int i = 0; i < m_SkillList.Count; i++)
-            {
-                m_UseSkill.Push(m_SkillList[i]);
-            }
+                    break;
+                case SkillType.Back:
+                    if (!GetBack(role, skill))
+                    {
+                        GetFront(role, skill);
+                    }
 
-            m_SkillList.Clear();
+                    break;
+                case SkillType.Chain:
+                    GetChain(role, skill);
+                    break;
+                case SkillType.All:
+                    GetAll(role, skill);
+                    break;
+            }
         }
 
         /// <summary>
@@ -323,7 +169,7 @@ namespace StarForce
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        private int GetAtkTarget(RoleImpactData role)
+        private void GetAtkTarget(RoleImpactData role, Skill skill)
         {
             int target = 0;
             if (role.Camp == CampType.Player)
@@ -334,7 +180,7 @@ namespace StarForce
                     {
                         if (stack.Count <= 0)
                         {
-                            return 0;
+                            return;
                         }
 
                         var peek = stack.Peek();
@@ -347,6 +193,16 @@ namespace StarForce
                             target = peek;
                         }
                     }
+
+                    GameEntry.Event.Fire(this,
+                        ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>(1) {target},
+                            GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                    if (skill.Buff != Buff.Default)
+                    {
+                        GameEntry.Event.Fire(this,
+                            ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>(1) {target},
+                                GetCamp(role.Camp, skill.TargetType), skill.Buff,skill.BuffTime,(int)skill.BuffValue*role.Attack));
+                    }
                 }
             }
 
@@ -358,7 +214,7 @@ namespace StarForce
                     {
                         if (stack.Count <= 0)
                         {
-                            return 0;
+                            return;
                         }
 
                         var peek = stack.Peek();
@@ -371,22 +227,219 @@ namespace StarForce
                             target = peek;
                         }
                     }
+
+                    GameEntry.Event.Fire(this,
+                        ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>(1) {target},
+                            GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                }
+            }
+        }
+
+        private bool GetFront(RoleImpactData role, Skill skill)
+        {
+            if (GameEntry.Role.GetTarget(GetCamp(role.Camp, skill.TargetType))[1].GetImpact().Die &&
+                GameEntry.Role.GetTarget(GetCamp(role.Camp, skill.TargetType))[2].GetImpact().Die)
+            {
+                return false;
+            }
+            else
+            {
+                GameEntry.Event.Fire(this,
+                    ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>() {1, 2},
+                        GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                return true;
+            }
+        }
+
+        private CampType GetCamp(CampType campType, TargetType targetType)
+        {
+            if (targetType == TargetType.Teammate)
+            {
+                return campType;
+            }
+
+            if (targetType == TargetType.Enemy)
+            {
+                if (campType == CampType.Enemy)
+                {
+                    return CampType.Player;
+                }
+
+                if (campType == CampType.Player)
+                {
+                    return CampType.Enemy;
                 }
             }
 
-
-            return target;
+            return CampType.Unknown;
         }
 
-        private void OnStartBattle(object sender, GameEventArgs e)
+        private bool GetBack(RoleImpactData role, Skill skill)
         {
-            StartBattleEventArgs ne = e as StartBattleEventArgs;
-            if (ne == null)
+            if (GameEntry.Role.GetTarget(GetCamp(role.Camp, skill.TargetType))[3].GetImpact().Die &&
+                GameEntry.Role.GetTarget(GetCamp(role.Camp, skill.TargetType))[4].GetImpact().Die &&
+                GameEntry.Role.GetTarget(GetCamp(role.Camp, skill.TargetType))[5].GetImpact().Die)
             {
-                return;
+                return false;
+            }
+            else
+            {
+                GameEntry.Event.Fire(this,
+                    ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>() {3, 4, 5},
+                        GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+                return true;
+            }
+        }
+
+        private void GetChain(RoleImpactData role, Skill skill)
+        {
+            List<int> list = new List<int>();
+            List<int> target = new List<int>();
+            int i = 3;
+            foreach (KeyValuePair<int, Role> keyValuePair in GameEntry.Role.GetTarget(GetCamp(role.Camp,
+                skill.TargetType)))
+            {
+                target.Add(keyValuePair.Key);
             }
 
-            Start();
+            while (i > 0)
+            {
+                if (target.Count <= 0)
+                {
+                    break;
+                }
+
+                int j = GameFramework.Utility.Random.GetRandom(0, target.Count);
+                if (!GameEntry.Role.GetTarget(GetCamp(role.Camp, skill.TargetType))[target[j]].GetImpact().Die &&
+                    !list.Contains(j))
+                {
+                    list.Add(target[j]);
+                    i--;
+                }
+
+                target.Remove(target[j]);
+            }
+
+            GameEntry.Event.Fire(this,
+                ReferencePool.Acquire<HurtEventArgs>()
+                    .Fill(list, GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
         }
+
+        private void GetAll(RoleImpactData role, Skill skill)
+        {
+            GameEntry.Event.Fire(this,
+                ReferencePool.Acquire<HurtEventArgs>().Fill(new List<int>() {1, 2, 3, 4, 5},
+                    GetCamp(role.Camp, skill.TargetType), (int) skill.Magnification * role.Attack));
+        }
+    }
+
+    public enum SkillType
+    {
+        Positive, //正面
+
+        Front, //前排
+
+        Back, //后排
+
+        Chain, //链状
+
+        All, //全体
+    }
+
+    public enum Buff
+    {
+        Default,
+
+        /// <summary>
+        /// 中毒
+        /// </summary>
+        Poisoning,
+
+        /// <summary>
+        /// 眩晕
+        /// </summary>
+        Vertigo,
+
+        /// <summary>
+        /// 减速
+        /// </summary>
+        SlowDown,
+    }
+
+    public struct BuffState
+    {
+        private Buff m_Buff;
+
+        private int m_Round;
+
+        private int m_Value;
+
+        public Buff Buff
+        {
+            get { return m_Buff; }
+            set { m_Buff = value; }
+        }
+
+        public int Round
+        {
+            get { return m_Round; }
+            set { m_Round = value; }
+        }
+
+        public int Value
+        {
+            get { return m_Value; }
+            set { m_Value = value; }
+        }
+
+        public BuffState(Buff buff, int round, int value)
+        {
+            m_Buff = buff;
+            m_Round = round;
+            m_Value = value;
+        }
+    }
+
+    public struct Skill
+    {
+        public int Id;
+
+        public SkillType SkillType;
+
+        public TargetType TargetType;
+
+        public double Magnification; //技能倍率
+
+        public Buff Buff;
+
+        public int BuffTime;
+        
+        public double BuffValue;
+
+        public Skill(int id, SkillType skillType, TargetType targetType, double magnification, Buff buff,int buffTime,double buffValue)
+        {
+            Id = id;
+            SkillType = skillType;
+            TargetType = targetType;
+            Magnification = magnification;
+            Buff = buff;
+            BuffTime = buffTime;
+            BuffValue = buffValue;
+        }
+    }
+
+    public enum TargetType
+    {
+        Unknown = 0,
+
+        /// <summary>
+        /// 己方阵营。
+        /// </summary>
+        Teammate,
+
+        /// <summary>
+        /// 敌人阵营。
+        /// </summary>
+        Enemy,
     }
 }

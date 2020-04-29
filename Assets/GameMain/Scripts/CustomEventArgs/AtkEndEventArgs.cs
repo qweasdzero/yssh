@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GameFramework.Event;
+﻿using GameFramework.Event;
 
 namespace StarForce
 {
@@ -19,15 +18,15 @@ namespace StarForce
             }
         }
 
-        public List<int>  Seat;
+        public int Seat;
         public CampType CampType;
-        public int Hurt;
+        public int SkillId;
 
-        public AtkEndEventArgs Fill(List<int> seat, CampType campType,int hurt)
+        public AtkEndEventArgs Fill(int seat, CampType campType,int skillId)
         {
             Seat = seat;
             CampType = campType;
-            Hurt = hurt;
+            SkillId = skillId;
             return this;
         }
     }

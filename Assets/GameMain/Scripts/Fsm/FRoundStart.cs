@@ -17,6 +17,7 @@ namespace StarForce
         {
             base.OnEnter(fsm);
             fsm.Owner.Round += 1;
+            fsm.Owner.Seat = 0;
             if (fsm.Owner.Round >= 5)
             {
                 GameEntry.Skill.Power += 10;

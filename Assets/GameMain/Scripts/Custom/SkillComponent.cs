@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GameFramework;
 using GameFramework.Event;
 using UnityEngine;
@@ -130,6 +131,28 @@ namespace StarForce
         {
             get { return m_Skill5CdMax; }
             set { m_Skill5CdMax = value; }
+        }
+
+        private Dictionary<int, Skill> m_Dic;
+
+        public Dictionary<int, Skill> Dic
+        {
+            get { return m_Dic; }
+            set { m_Dic = value; }
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            m_Dic = new Dictionary<int, Skill>
+            {
+                {0, new Skill(0, SkillType.Positive, TargetType.Enemy, 1, Buff.Default, 0, 0)}, //普通攻击
+                {1, new Skill(1, SkillType.Positive, TargetType.Enemy, 2, Buff.Vertigo, 1, 0)}, //单体眩晕
+                {2, new Skill(2, SkillType.All, TargetType.Teammate, -1, Buff.Default, 0, 0)}, //群体加血
+                {3, new Skill(3, SkillType.Back, TargetType.Enemy, 1.3, Buff.Poisoning, 1, 0.2)}, //后排中毒
+                {4, new Skill(4, SkillType.Chain, TargetType.Enemy, 1.5, Buff.Default, 0, 0)}, //链式伤害
+                {5, new Skill(5, SkillType.Front, TargetType.Enemy, 1.8, Buff.SlowDown, 1, 0)} //前排减速
+            };
         }
     }
 }

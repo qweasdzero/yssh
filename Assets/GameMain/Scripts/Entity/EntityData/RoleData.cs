@@ -1,4 +1,6 @@
-﻿namespace StarForce
+﻿using System.Collections.Generic;
+
+namespace StarForce
 {
     public class RoleData: EntityData
     {
@@ -59,6 +61,30 @@
         {
             get { return m_Die; }
             set { m_Die = value; }
+        }
+
+        private int m_SkillId;
+
+        private int m_PowerId;
+
+        public int SkillId
+        {
+            get { return m_SkillId; }
+            set { m_SkillId = value; }
+        }
+
+        public int PowerId
+        {
+            get { return m_PowerId; }
+            set { m_PowerId = value; }
+        }
+
+        private List<BuffState> m_BuffState;
+
+        public List<BuffState> BuffState
+        {
+            get { return m_BuffState; }
+            set { m_BuffState = value; }
         }
 
         public RoleData(int entityId, int typeId) : base(entityId, typeId)

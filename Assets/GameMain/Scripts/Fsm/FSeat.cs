@@ -16,11 +16,10 @@ namespace StarForce
         protected override void OnEnter(IFsm<NormalGame> fsm)
         {
             base.OnEnter(fsm);
-
+            GameEntry.Event.Subscribe(HurtEventArgs.EventId, OnAtkEnd);
             m_Fsm = fsm;
 
             GetAttacker();
-            GameEntry.Event.Subscribe(AtkEndEventArgs.EventId, OnAtkEnd);
         }
 
         /// <summary>
@@ -139,39 +138,56 @@ namespace StarForce
             if (m_Fsm.Owner.UseSkill.Count > 0)
             {
                 Role role = m_Fsm.Owner.UseSkill.Pop();
+                if (role.GetImpact().Die)
+                {
+                    GetAttacker();
+                    return;
+                }
                 GameEntry.Event.Fire(this,
                     ReferencePool.Acquire<SkillEventArgs>().Fill(role.GetImpact().Seat, role.GetImpact().Camp));
                 return;
             }
-
+            
             if (m_Fsm.Owner.First != null)
             {
                 if (!m_Fsm.Owner.First.GetImpact().Die) //判断是否可以攻击
                 {
                     int target = GetAtkTarget(m_Fsm.Owner.First.GetImpact());
+                    if (target == 0)
+                    {
+                        IsGameOver(m_Fsm.Owner.First.GetImpact().Camp);
+                        return;
+                    }
 
                     GameEntry.Event.Fire(this,
                         ReferencePool.Acquire<AtkEventArgs>()
                             .Fill(m_Fsm.Owner.Seat, m_Fsm.Owner.First.GetImpact().Camp, target));
                     m_Fsm.Owner.First = null;
+                    return;
                 }
             }
-            else if (m_Fsm.Owner.Second != null)
+
+            if (m_Fsm.Owner.Second != null)
             {
-                if (!m_Fsm.Owner.First.GetImpact().Die) //判断是否可以攻击
+                if (!m_Fsm.Owner.Second.GetImpact().Die) //判断是否可以攻击
                 {
-                    int target = GetAtkTarget(m_Fsm.Owner.First.GetImpact());
+                    int target = GetAtkTarget(m_Fsm.Owner.Second.GetImpact());
+
+                    if (target == 0)
+                    {
+                        IsGameOver(m_Fsm.Owner.Second.GetImpact().Camp);
+                        return;
+                    }
 
                     GameEntry.Event.Fire(this,
                         ReferencePool.Acquire<AtkEventArgs>()
-                            .Fill(m_Fsm.Owner.Seat, m_Fsm.Owner.First.GetImpact().Camp, target));
+                            .Fill(m_Fsm.Owner.Seat, m_Fsm.Owner.Second.GetImpact().Camp, target));
                     m_Fsm.Owner.Second = null;
+                    return;
                 }
             }
-            else
-            {
-                ChangeState<FSeatStart>(m_Fsm);
-            }
+
+            ChangeState<FSeatStart>(m_Fsm);
         }
 
         protected override void OnUpdate(IFsm<NormalGame> fsm, float elapseSeconds, float realElapseSeconds)
@@ -179,15 +195,48 @@ namespace StarForce
             base.OnUpdate(fsm, elapseSeconds, realElapseSeconds);
         }
 
+
+        /// <summary>
+        /// 判断战斗结束
+        /// </summary>
+        private void IsGameOver(CampType campType)
+        {
+            switch (campType)
+            {
+                case CampType.Player:
+                    foreach (Role role in GameEntry.Role.EnemyRole.Values)
+                    {
+                        if (!role.GetImpact().Die)
+                        {
+                            return;
+                        }
+                    }
+
+                    break;
+                case CampType.Enemy:
+                    foreach (Role role in GameEntry.Role.MyRole.Values)
+                    {
+                        if (!role.GetImpact().Die)
+                        {
+                            return;
+                        }
+                    }
+
+                    break;
+            }
+
+            ChangeState<FEnd>(m_Fsm);
+        }
+
         protected override void OnLeave(IFsm<NormalGame> fsm, bool isShutdown)
         {
             base.OnLeave(fsm, isShutdown);
-            GameEntry.Event.Unsubscribe(AtkEndEventArgs.EventId, OnAtkEnd);
+            GameEntry.Event.Unsubscribe(HurtEventArgs.EventId, OnAtkEnd);
         }
 
         private void OnAtkEnd(object sender, GameEventArgs e)
         {
-            AtkEndEventArgs ne = e as AtkEndEventArgs;
+            HurtEventArgs ne = e as HurtEventArgs;
             if (ne == null)
             {
                 return;

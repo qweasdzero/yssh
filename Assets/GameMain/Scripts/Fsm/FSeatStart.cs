@@ -11,14 +11,17 @@ namespace StarForce
 {
     public class FSeatStart : FsmBase
     {
-        public List<int> m_PowerList = new List<int>() {2, 4, 6, 8, 10};
-
         protected override void OnEnter(IFsm<NormalGame> fsm)
         {
             base.OnEnter(fsm);
             //计算下一个目标
-            fsm.Owner.Seat = (fsm.Owner.Seat % 5) + 1;
+            if (fsm.Owner.Seat >= 5)
+            {
+                ChangeState<FRoundStart>(fsm);
+                return;
+            }
             
+            fsm.Owner.Seat = (fsm.Owner.Seat % 5) + 1;
             Atk(fsm);
         }
 
@@ -37,51 +40,9 @@ namespace StarForce
                 fsm.Owner.Second = role1;
             }
 
-            ChangeState<FStart>(fsm);
+            ChangeState<FSeat>(fsm);
         }
-
-//         /// <summary>
-//         /// 判断战斗结束
-//         /// </summary>
-//         private bool IsGameOver(CampType campType)
-//         {
-//             switch (campType)
-//             {
-//                 case CampType.Player:
-//                     foreach (Role role in GameEntry.Role.EnemyRole.Values)
-//                     {
-//                         if (!role.GetImpact().Die)
-//                         {
-//                             return false;
-//                         }
-//                     }
-//
-//                     break;
-//                 case CampType.Enemy:
-//                     foreach (Role role in GameEntry.Role.MyRole.Values)
-//                     {
-//                         if (!role.GetImpact().Die)
-//                         {
-//                             return false;
-//                         }
-//                     }
-//
-//                     break;
-//             }
-//
-// // m_Start = false;
-//             GameEntry.Event.Fire(this, ReferencePool.Acquire<GameOverEventArgs>().Fill());
-//             return true;
-//         }
-
-
-
-
-        protected override void OnUpdate(IFsm<NormalGame> fsm, float elapseSeconds, float realElapseSeconds)
-        {
-            base.OnUpdate(fsm, elapseSeconds, realElapseSeconds);
-        }
-
+        
         protected override void OnLeave(IFsm<NormalGame> fsm, bool isShutdown)
         {
             base.OnLeave(fsm, isShutdown);

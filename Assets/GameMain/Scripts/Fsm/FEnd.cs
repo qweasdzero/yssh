@@ -9,12 +9,13 @@ using UnityGameFramework.Runtime;
 
 namespace StarForce
 {
-    public class FSkill : FsmBase
+    public class FEnd : FsmBase
     {
         
        protected override void OnEnter(IFsm<NormalGame> fsm)
         {
             base.OnEnter(fsm);
+            GameEntry.Event.Fire(this, ReferencePool.Acquire<GameOverEventArgs>().Fill());
         }
 
        protected override void OnUpdate(IFsm<NormalGame> fsm, float elapseSeconds, float realElapseSeconds)
@@ -26,6 +27,5 @@ namespace StarForce
         {
             base.OnLeave(fsm, isShutdown);
         }
-        
     }
 }
