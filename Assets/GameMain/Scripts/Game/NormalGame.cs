@@ -276,7 +276,7 @@ namespace StarForce
                     GameEntry.Event.Fire(this,
                         ReferencePool.Acquire<ExertBuffEventArgs>().Fill(new List<int>() {1, 2},
                             GetCamp(role.Camp, skill.TargetType), skill.Buff, skill.BuffTime,
-                            (int)( skill.BuffValue * role.Attack)));
+                            (int) (skill.BuffValue * role.Attack)));
                 }
                 else
                 {

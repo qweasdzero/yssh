@@ -166,8 +166,14 @@ namespace StarForce
 
             if (ne.CampType == m_RoleData.Camp && ne.Seat.Contains(m_RoleData.Seat))
             {
+                if (m_RoleData.Die)
+                {
+                    return;
+                }
+
                 // Log.Info("Seat:" + m_RoleData.Seat + "__Camp:" + m_RoleData.Camp + "__Hurt:" + ne.Hurt);
                 OnHurt(ne.Hurt);
+                GameEntry.Entity.ShowEffect(new EffectData(GameEntry.Entity.GenerateSerialId(), 3000, Id));
             }
         }
 
@@ -218,7 +224,6 @@ namespace StarForce
 
             if (ne.CampType == m_RoleData.Camp && ne.Seat == m_RoleData.Seat)
             {
- 
                 StartCoroutine(AtkStart());
             }
         }
@@ -228,7 +233,7 @@ namespace StarForce
             yield return new WaitForSeconds(1);
             m_Anim.SetTrigger(Atk);
         }
-        
+
         public void AtkEnd()
         {
             if (m_RoleData.Power >= 100)

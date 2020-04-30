@@ -40,6 +40,11 @@ namespace StarForce
             entityComponent.ShowEntity(typeof(Role), "Role", Constant.AssetPriority.MyAircraftAsset, data);
         } 
         
+        public static void ShowEffect(this EntityComponent entityComponent, EffectData data)
+        {
+            entityComponent.ShowEntity(typeof(Effect), "Effect", Constant.AssetPriority.MyAircraftAsset, data);
+        } 
+        
         public static void ShowHpBar(this EntityComponent entityComponent, HpBarData data)
         {
             entityComponent.ShowEntity(typeof(HpBar), "HpBar", Constant.AssetPriority.MyAircraftAsset, data);
