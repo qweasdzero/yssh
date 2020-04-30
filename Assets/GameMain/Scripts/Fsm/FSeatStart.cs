@@ -22,6 +22,7 @@ namespace StarForce
             }
             
             fsm.Owner.Seat = (fsm.Owner.Seat % 5) + 1;
+            
             Atk(fsm);
         }
 
