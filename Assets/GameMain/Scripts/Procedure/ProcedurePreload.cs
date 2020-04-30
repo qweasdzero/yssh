@@ -25,6 +25,7 @@ namespace StarForce
             "Sound",
             "UIForm",
             "UISound",
+            "Effect",
             
         };
 

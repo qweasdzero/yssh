@@ -16,7 +16,7 @@
       <OutputFullSelected>False</OutputFullSelected>
       <OutputPackedSelected>False</OutputPackedSelected>
       <BuildEventHandlerTypeName>StarForce.Editor.StarForceBuildEventHandler</BuildEventHandlerTypeName>
-      <OutputDirectory>F:/unityProject/TempPackage</OutputDirectory>
+      <OutputDirectory>F:/NewAssets</OutputDirectory>
     </Settings>
   </AssetBundleBuilder>
 </UnityGameFramework>

@@ -1,0 +1,6 @@
+﻿#	特效表		
+#	Id		AssetName
+#	int		string
+#	特效编号	策划备注	资源名称
+	1000	万剑诀	WJJ
+	2000	土遁杀	TDS

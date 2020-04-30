@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using GameFramework;
 using GameFramework.Event;
@@ -217,10 +218,17 @@ namespace StarForce
 
             if (ne.CampType == m_RoleData.Camp && ne.Seat == m_RoleData.Seat)
             {
-                m_Anim.SetTrigger(Atk);
+ 
+                StartCoroutine(AtkStart());
             }
         }
 
+        IEnumerator AtkStart()
+        {
+            yield return new WaitForSeconds(1);
+            m_Anim.SetTrigger(Atk);
+        }
+        
         public void AtkEnd()
         {
             if (m_RoleData.Power >= 100)

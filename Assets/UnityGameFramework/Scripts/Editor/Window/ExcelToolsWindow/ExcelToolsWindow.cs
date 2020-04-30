@@ -154,7 +154,7 @@ namespace UnityGameFramework.Editor
             {
                 return;
             }
-
+            
             SelectionExcel();
             Repaint();
         }
@@ -247,6 +247,7 @@ namespace UnityGameFramework.Editor
             m_FilePath = objPath.EndsWith(".xlsx") ? objPath : string.Empty;
 
             m_ExcelData = string.IsNullOrEmpty(m_FilePath) ? null : new ExcelData(m_FilePath);
+            
         }
     }
 }
