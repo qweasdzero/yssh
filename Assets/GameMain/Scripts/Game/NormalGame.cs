@@ -117,7 +117,7 @@ namespace StarForce
         private Stack<Role> m_UseSkill;
         private Stack<Role> m_ExtraSkill;
         private LinkedList<Role> m_SlowAtk;
-
+        
         public List<Role> SkillList
         {
             get { return m_SkillList; }
