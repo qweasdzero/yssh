@@ -12,6 +12,7 @@
       <AssetBundle Name="Scenes" LoadType="0" Packed="True" />
     </AssetBundles>
     <Assets>
+      <Asset Guid="01843a039a81a3940af593d18ee4dcb4" AssetBundleName="DataTables" />
       <Asset Guid="09966b19e546cc94aa84d0743cb2a83d" AssetBundleName="Fonts" />
       <Asset Guid="0d3b0ad9c2d6ac144ae3bc7c533523f2" AssetBundleName="Fonts" />
       <Asset Guid="1053b0070685be347ab58587156842dc" AssetBundleName="Localization/Dictionaries" AssetBundleVariant="zh-tw" />
@@ -20,9 +21,11 @@
       <Asset Guid="315e8ed2db27c254cb3366ff0793cd90" AssetBundleName="DataTables" />
       <Asset Guid="352da872791696c48af3b21132e3e3c3" AssetBundleName="DataTables" />
       <Asset Guid="372a8b1e52bedc64b9207b12d167afaa" AssetBundleName="DataTables" />
+      <Asset Guid="37a1839365aba2a4fb0f0276c5457d0c" AssetBundleName="DataTables" />
       <Asset Guid="4473d81b14ddb0143addf0e6050d8491" AssetBundleName="Scenes" />
       <Asset Guid="44c8db52241385c45bbb14a1718f17bf" AssetBundleName="Configs" />
       <Asset Guid="45960f3560d60824eb05c3cfc07350b1" AssetBundleName="Fonts" />
+      <Asset Guid="5c0c5fbecdd79c74fb0a7282a4c6333e" AssetBundleName="Fonts" />
       <Asset Guid="5dcd89912e222bf4c87f76db4044bc5e" AssetBundleName="Localization/Dictionaries" AssetBundleVariant="ko-kr" />
       <Asset Guid="77cbb7c5404c10242ab59953e0746314" AssetBundleName="Fonts" />
       <Asset Guid="7fd11dc5d29076d469d414dec2818f11" AssetBundleName="Configs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameFramework;
+using GameFramework.DataTable;
 using GameFramework.Event;
 using UnityEngine;
 using UnityGameFramework.Runtime;
@@ -143,6 +144,7 @@ namespace StarForce
         protected override void Awake()
         {
             base.Awake();
+            IDataTable<DREntity> drEntities;
             m_Dic = new Dictionary<int, Skill>
             {
                 {0, new Skill(0, SkillType.Positive, TargetType.Enemy, 1, Buff.Default, 0, 0)}, //普通攻击
@@ -150,7 +152,15 @@ namespace StarForce
                 {2, new Skill(2, SkillType.All, TargetType.Teammate, -1, Buff.Default, 0, 0)}, //群体加血
                 {3, new Skill(3, SkillType.Back, TargetType.Enemy, 1.3, Buff.Poisoning, 2, 0.2)}, //后排中毒
                 {4, new Skill(4, SkillType.Chain, TargetType.Enemy, 1.5, Buff.Default, 0, 0)}, //链式伤害
-                {5, new Skill(5, SkillType.Front, TargetType.Enemy, 1.8, Buff.Default, 1, 0)} //前排伤害
+                {5, new Skill(5, SkillType.Front, TargetType.Enemy, 1.8, Buff.Default, 1, 0)}, //前排伤害
+                {6, new Skill(6, SkillType.Positive, TargetType.Enemy, 3, Buff.Vertigo, 1, 0)}, //单体眩晕
+                {7, new Skill(7, SkillType.All, TargetType.Teammate, -2, Buff.Default, 0, 0)}, //群体加血
+                {8, new Skill(8, SkillType.Back, TargetType.Enemy, 2.3, Buff.Poisoning, 2, 0.2)}, //后排中毒
+                {9, new Skill(9, SkillType.Chain, TargetType.Enemy, 2.5, Buff.Default, 0, 0)}, //链式伤害
+                {10, new Skill(10, SkillType.Front, TargetType.Enemy, 2.8, Buff.Default, 1, 0)}, //前排伤害
+                {14, new Skill(14, SkillType.Self, 3, true, 15, 0, 16)}, //变身
+                {15, new Skill(15, SkillType.Chain, TargetType.Enemy, 1.4, Buff.Default, 1, 0)}, //强化普攻
+                {16, new Skill(16, SkillType.Chain, TargetType.Enemy, 2.8, Buff.Default, 1, 0)}, //强化技能
             };
         }
     }

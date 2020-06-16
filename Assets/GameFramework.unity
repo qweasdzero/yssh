@@ -310,6 +310,10 @@ PrefabInstance:
       propertyPath: FadeCurve.m_Curve.Array.data[2].outSlope
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 33f96eedfff0ffd43be808465075f6ba, type: 3}
+      propertyPath: MaxUses
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 11400004, guid: 33f96eedfff0ffd43be808465075f6ba, type: 3}
       propertyPath: m_ReferenceResolution.x
       value: 1080

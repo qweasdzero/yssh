@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Sprites;
 using UnityEngine.UI;
 
-namespace SG1
+namespace StarForce
 {
     /// <summary>
     /// 镜像类型

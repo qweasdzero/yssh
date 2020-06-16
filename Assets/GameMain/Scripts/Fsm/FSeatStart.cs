@@ -1,11 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using GameFramework;
-using GameFramework.Event;
-using GameFramework.Fsm;
-using SG1;
-using UnityEngine;
-using UnityGameFramework.Runtime;
+﻿using GameFramework.Fsm;
 
 namespace StarForce
 {
@@ -22,7 +15,6 @@ namespace StarForce
             }
             
             fsm.Owner.Seat = (fsm.Owner.Seat % 5) + 1;
-            
             Atk(fsm);
         }
 

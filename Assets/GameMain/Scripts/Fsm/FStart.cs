@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using GameFramework;
 using GameFramework.Event;
 using GameFramework.Fsm;
-using SG1;
+using StarForce;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
@@ -31,7 +31,8 @@ namespace StarForce
                     Atk = 20,
                     HpMax = 200,
                     Speed = 100 + i,
-                    SkillId = i + 1,
+                    SkillId = i + 1, PowerId = 14,
+                    
                 });
             }
 
@@ -45,7 +46,7 @@ namespace StarForce
                     Atk = 20,
                     HpMax = 200,
                     Speed = 100 + 2 * i,
-                    SkillId = i + 1,
+                    SkillId = i + 1,PowerId = 6 + i,
                 });
             }
 

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3303741657010025071}
   - component: {fileID: 3303741657010025070}
   - component: {fileID: 3303741657010025065}
-  - component: {fileID: 9127223026428559781}
+  - component: {fileID: 1404996387808997644}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -102,7 +102,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!58 &9127223026428559781
+--- !u!58 &1404996387808997644
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

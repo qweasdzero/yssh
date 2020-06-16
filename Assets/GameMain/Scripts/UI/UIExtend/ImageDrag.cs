@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace SG1
+namespace StarForce
 {
     /// <summary>
     /// 图片拖拽脚本

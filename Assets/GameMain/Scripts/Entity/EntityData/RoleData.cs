@@ -63,9 +63,17 @@ namespace StarForce
             set { m_Die = value; }
         }
 
+        private int m_AtkId;
+
         private int m_SkillId;
 
         private int m_PowerId;
+
+        public int AtkId
+        {
+            get { return m_AtkId; }
+            set { m_AtkId = value; }
+        }
 
         public int SkillId
         {

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using GameFramework;
 using GameFramework.Event;
-using SG1;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
@@ -13,7 +12,7 @@ namespace StarForce
     {
         private RoleData m_RoleData;
         private Animator m_Anim;
-        private static readonly int Atk = Animator.StringToHash("Atk");
+
         private HpBar m_HpBar;
         private int m_HpId;
         private SpriteRenderer m_Sprite;
@@ -26,6 +25,7 @@ namespace StarForce
         }
 
         private RoleImpactData m_ImpactData;
+        private static readonly int Atk = Animator.StringToHash("Atk");
         private static readonly int Skill = Animator.StringToHash("Skill");
 
         public RoleImpactData GetImpact()
@@ -103,7 +103,6 @@ namespace StarForce
 
             if (m_RoleData.BuffState.ContainsKey(Buff.Poisoning))
             {
-                Log.Info(m_RoleData.BuffState[Buff.Poisoning].Value);
                 OnHurt(m_RoleData.BuffState[Buff.Poisoning].Value);
                 m_RoleData.BuffState[Buff.Poisoning].Round -= 1;
                 if (m_RoleData.BuffState[Buff.Poisoning].Round <= 0)
@@ -187,7 +186,6 @@ namespace StarForce
 
             if (ne.CampType == m_RoleData.Camp && ne.Seat.Contains(m_RoleData.Seat))
             {
-                Log.Info(ne.BuffValue);
                 m_RoleData.BuffState[ne.Buff] = new BuffState(ne.Buff, ne.BuffTime, ne.BuffValue);
             }
         }
@@ -200,6 +198,15 @@ namespace StarForce
                 if (m_RoleData.BuffState[Buff.Vertigo].Round <= 0)
                 {
                     m_RoleData.BuffState.Remove(Buff.Vertigo);
+                }
+            }
+
+            if (m_RoleData.BuffState.ContainsKey(Buff.Strengthen))
+            {
+                m_RoleData.BuffState[Buff.Strengthen].Round -= 1;
+                if (m_RoleData.BuffState[Buff.Strengthen].Round <= 0)
+                {
+                    m_RoleData.BuffState.Remove(Buff.Strengthen);
                 }
             }
 
@@ -249,7 +256,7 @@ namespace StarForce
                 m_RoleData.Power += 50;
                 m_HpBar.ChangePower(m_RoleData.Power);
                 GameEntry.Event.Fire(this,
-                    ReferencePool.Acquire<AtkEndEventArgs>().Fill(m_RoleData.Seat, m_RoleData.Camp, 0));
+                    ReferencePool.Acquire<AtkEndEventArgs>().Fill(m_RoleData.Seat, m_RoleData.Camp, m_RoleData.AtkId));
             }
         }
 
@@ -257,6 +264,24 @@ namespace StarForce
         {
             GameEntry.Event.Fire(this,
                 ReferencePool.Acquire<AtkEndEventArgs>().Fill(m_RoleData.Seat, m_RoleData.Camp, m_RoleData.PowerId));
+            Skill skill = GameEntry.Skill.Dic[m_RoleData.PowerId];
+            if (skill.Impact)
+            {
+                if (skill.AtkId != 0)
+                {
+                    m_RoleData.AtkId = skill.AtkId;
+                }
+
+                if (skill.PowerId != 0)
+                {
+                    m_RoleData.Power = skill.PowerId;
+                }
+
+                if (skill.SkillId != 0)
+                {
+                    m_RoleData.SkillId = skill.SkillId;
+                }
+            }
         }
     }
 }

@@ -1,15 +1,12 @@
-﻿using SG1;
+﻿using StarForce;
 
 namespace StarForce
 {
     public class HpBarData: EntityData
     {
-        private int m_Seat;
-
         private int m_Hp;
         private int m_HpMax;
         private int m_Power;
-        public const int PowerMax = 100;
 
         private Role m_Father;
 
@@ -17,12 +14,6 @@ namespace StarForce
         {
             get { return m_Father; }
             set { m_Father = value; }
-        }
-
-        public int Seat
-        {
-            get { return m_Seat; }
-            set { m_Seat = value; }
         }
 
         public int Hp

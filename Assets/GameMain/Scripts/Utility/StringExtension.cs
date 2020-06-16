@@ -1,4 +1,4 @@
-namespace SG1
+namespace StarForce
 {
     public static class StringExtension
     {

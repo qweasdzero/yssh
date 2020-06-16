@@ -2,7 +2,7 @@
 using StarForce;
 using UnityEngine;
 
-namespace SG1
+namespace StarForce
 {
     public struct RoleImpactData
     {

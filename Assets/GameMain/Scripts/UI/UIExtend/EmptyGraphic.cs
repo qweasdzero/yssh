@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace SG1
+namespace StarForce
 {
     public class EmptyGraphic : Graphic
     {

@@ -1,11 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using GameFramework;
+﻿using GameFramework;
 using GameFramework.Event;
 using GameFramework.Fsm;
-using SG1;
-using UnityEngine;
-using UnityGameFramework.Runtime;
 
 namespace StarForce
 {
@@ -101,7 +96,6 @@ namespace StarForce
                 {
                     if (m_Fsm.Owner.First.GetImpact().BuffState.ContainsKey(Buff.Vertigo))
                     {
-                        Log.Info("Vertigo");
                         m_Fsm.Owner.First.OnActionBuff();
                         m_Fsm.Owner.First = null;
                         GetAttacker();
@@ -130,7 +124,6 @@ namespace StarForce
                 {
                     if (m_Fsm.Owner.Second.GetImpact().BuffState.ContainsKey(Buff.Vertigo))
                     {
-                        Log.Info("Vertigo");
                         m_Fsm.Owner.Second.OnActionBuff();
                         m_Fsm.Owner.Second = null;
                         GetAttacker();

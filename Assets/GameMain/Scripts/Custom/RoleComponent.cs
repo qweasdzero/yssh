@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using GameFramework;
 using GameFramework.Event;
-using SG1;
+using StarForce;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
@@ -55,6 +55,5 @@ namespace StarForce
         }
 
         [SerializeField]public bl_HUDText HudText;
-
     }
 }

@@ -18,7 +18,7 @@ public class bl_HUDText : MonoBehaviour {
     public float FadeSpeed;
     public AnimationCurve FadeCurve = new AnimationCurve(new Keyframe[] { new Keyframe(1f, 1f), new Keyframe(3f, 0f) });
     //Start Animation type
-    public TextAnimationType m_TextAnimationType = TextAnimationType.PingPong;
+    public TextAnimationType m_TextAnimationType = TextAnimationType.SmallToNormal;
     //Speed factor to move / floating the text
     public float FloatingSpeed;
     //Distance between target and uiCamera / playerCamera for hide the text

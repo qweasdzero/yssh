@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using SG1;
+using StarForce;
 using UnityGameFramework.Runtime;
 
 namespace StarForce.Editor

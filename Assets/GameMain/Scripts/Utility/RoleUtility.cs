@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityGameFramework.Runtime;
 
 namespace StarForce
 {
     /// <summary>
-    /// AI 工具类。
+    /// 角色 工具类。
     /// </summary>
     public static class RoleUtility
     {
@@ -34,19 +33,14 @@ namespace StarForce
             {
                 case 1:
                     return Role1;
-                    break; 
                 case 2:
                     return Role2;
-                    break;
                 case 3:
                     return Role3;
-                    break;
                 case 4:
                     return Role4;
-                    break;
                 case 5:
                     return Role5;
-                    break;
             }
             return new List<int>();
         }

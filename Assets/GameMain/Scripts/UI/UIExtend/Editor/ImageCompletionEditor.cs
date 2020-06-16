@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEditor.UI;
 
-namespace SG1
+namespace StarForce
 {
 	[CustomEditor(typeof(ImageCompletion),true)]
 	[CanEditMultipleObjects]

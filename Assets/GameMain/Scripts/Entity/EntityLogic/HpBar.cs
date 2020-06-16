@@ -1,7 +1,5 @@
-using GameFramework.Resource;
-using SG1;
+using StarForce;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityGameFramework.Runtime;
 

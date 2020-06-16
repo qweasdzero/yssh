@@ -8,7 +8,7 @@
 using GameFramework;
 using System;
 using System.Collections.Generic;
-using SG1;
+using StarForce;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 

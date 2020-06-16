@@ -1,4 +1,4 @@
-﻿using SG1;
+﻿using StarForce;
 using UnityEngine;
 
 namespace StarForce

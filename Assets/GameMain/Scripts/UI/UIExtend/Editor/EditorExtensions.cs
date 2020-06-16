@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SG1
+namespace StarForce
 {
     static class EditorExtensions
     {

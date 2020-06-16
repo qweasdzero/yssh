@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GameFramework;
+﻿using GameFramework;
 using GameFramework.Fsm;
 
 namespace StarForce

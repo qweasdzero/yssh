@@ -1,5 +1,5 @@
 using GameFramework.Resource;
-using SG1;
+using StarForce;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -30,7 +30,6 @@ namespace StarForce
 
             m_EffectData.Scale = Vector3.one * 0.4f;
             CachedTransform.localScale = m_EffectData.Scale;
-            Log.Info(Id + ":" + m_EffectData.Father);
             GameEntry.Entity.AttachEntity(Id, m_EffectData.Father);
         }
 

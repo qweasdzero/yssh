@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SG1
+namespace StarForce
 {
 	internal static class UIEffectListPool<T>
 	{

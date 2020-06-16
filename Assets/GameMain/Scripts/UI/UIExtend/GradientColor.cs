@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SG1
+namespace StarForce
 {
     [AddComponentMenu("UI/Effects/Gradient Color")]
     [RequireComponent(typeof(Graphic))]

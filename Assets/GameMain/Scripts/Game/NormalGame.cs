@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using GameFramework;
+using GameFramework.DataTable;
 using GameFramework.Event;
 using GameFramework.Fsm;
-using SG1;
+using StarForce;
 using UnityGameFramework.Runtime;
 
 namespace StarForce
@@ -117,7 +118,7 @@ namespace StarForce
         private Stack<Role> m_UseSkill;
         private Stack<Role> m_ExtraSkill;
         private LinkedList<Role> m_SlowAtk;
-        
+
         public List<Role> SkillList
         {
             get { return m_SkillList; }
@@ -168,6 +169,9 @@ namespace StarForce
                     break;
                 case SkillType.All:
                     GetAll(role, skill);
+                    break;
+                case SkillType.Self:
+                    GameEntry.Event.Fire(this, ReferencePool.Acquire<NextRoleEventArgs>().Fill());
                     break;
             }
         }
@@ -413,6 +417,8 @@ namespace StarForce
         Chain, //链状
 
         All, //全体
+        
+        Self,//自身
     }
 
     public enum Buff
@@ -428,6 +434,11 @@ namespace StarForce
         /// 眩晕
         /// </summary>
         Vertigo,
+        
+        /// <summary>
+        /// 强化
+        /// </summary>
+        Strengthen,
 
         // /// <summary>
         // /// 减速
@@ -473,17 +484,56 @@ namespace StarForce
     {
         public int Id;
 
-        public SkillType SkillType;
+        public readonly SkillType SkillType;
 
-        public TargetType TargetType;
+        public readonly TargetType TargetType;
 
-        public double Magnification; //技能倍率
+        public readonly double Magnification; //技能倍率
 
-        public Buff Buff;
+        public readonly Buff Buff;
 
-        public int BuffTime;
+        public readonly int BuffTime;
 
-        public double BuffValue;
+        public readonly double BuffValue;
+
+        public readonly bool Impact;
+
+        public readonly int AtkId;
+
+        public readonly int PowerId;
+
+        public readonly int SkillId;
+        
+        public Skill(int id, SkillType skillType, TargetType targetType, double magnification, Buff buff, int buffTime,
+            double buffValue, bool impact, int atkId, int powerId, int skillId)
+        {
+            Id = id;
+            SkillType = skillType;
+            TargetType = targetType;
+            Magnification = magnification;
+            Buff = buff;
+            BuffTime = buffTime;
+            BuffValue = buffValue;
+            Impact = impact;
+            AtkId = atkId;
+            PowerId = powerId;
+            SkillId = skillId;
+        }
+        
+        public Skill(int id, SkillType skillType,int buffTime, bool impact, int atkId, int powerId, int skillId)
+        {
+            Id = id;
+            SkillType = skillType;
+            TargetType = TargetType.Unknown;
+            Magnification = 0;
+            Buff = Buff.Strengthen;
+            BuffTime = buffTime;
+            BuffValue = 0;
+            Impact = impact;
+            AtkId = atkId;
+            PowerId = powerId;
+            SkillId = skillId;
+        }
 
         public Skill(int id, SkillType skillType, TargetType targetType, double magnification, Buff buff, int buffTime,
             double buffValue)
@@ -495,6 +545,10 @@ namespace StarForce
             Buff = buff;
             BuffTime = buffTime;
             BuffValue = buffValue;
+            Impact = false;
+            AtkId = 0;
+            PowerId = 0;
+            SkillId = 0;
         }
     }
 
